@@ -1,0 +1,27 @@
+{
+  "id": "intro-to-programming",
+  "title": "Introduction to Programming",
+  "description": "Learn the basics of programming with interactive examples.",
+  "difficulty": "beginner",
+  "category": "fundamentals",
+  "estimatedTime": 30,
+  "content": {
+    "sections": [
+      {
+        "title": "What is Programming?",
+        "content": "Programming is the process of creating instructions for computers to follow.",
+        "examples": [
+          {
+            "language": "javascript",
+            "code": "console.log(\"Hello, World!\");",
+            "explanation": "This code prints \"Hello, World!\" to the console."
+          }
+        ]
+      }
+    ]
+  },
+  "exercises": [
+    "hello-world",
+    "variables-intro"
+  ]
+}

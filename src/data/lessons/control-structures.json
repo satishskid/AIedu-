@@ -1,0 +1,12 @@
+{
+  "id": "control-structures",
+  "title": "Control Structures",
+  "description": "Understanding if statements, loops, and decision making in code",
+  "difficulty": "beginner",
+  "category": "fundamentals",
+  "estimatedTime": 45,
+  "content": {
+    "introduction": "Control structures allow you to control the flow of your program execution.",
+    "example": "if (age >= 18) {\n  console.log(\"You are an adult\");\n} else {\n  console.log(\"You are a minor\");\n}"
+  }
+}

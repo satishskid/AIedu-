@@ -1,0 +1,126 @@
+{
+  "id": "grade-10-ml-intro",
+  "title": "Introduction to Machine Learning and AI",
+  "description": "Comprehensive introduction to machine learning concepts, algorithms, and practical applications for Grade 10 students",
+  "difficulty": "advanced",
+  "category": "Machine Learning",
+  "estimatedTime": 90,
+  "grade": "10",
+  "curriculum": ["CBSE Class 10 Computer Applications", "ICSE Class 10 Computer Science", "Common Core Standards"],
+  "learningObjectives": [
+    "Understand fundamental concepts of machine learning",
+    "Distinguish between supervised, unsupervised, and reinforcement learning",
+    "Implement basic ML algorithms using Python",
+    "Analyze real-world applications of AI and ML",
+    "Evaluate ethical implications of AI systems"
+  ],
+  "prerequisites": ["grade-9-python-fundamentals", "basic-statistics"],
+  "content": {
+    "sections": [
+      {
+        "title": "What is Machine Learning?",
+        "content": "Machine Learning (ML) is a subset of Artificial Intelligence that enables computers to learn and make decisions from data without being explicitly programmed for every task. Think of it as teaching a computer to recognize patterns, just like how you learned to recognize different animals by seeing many examples.",
+        "examples": [
+          {
+            "title": "Email Spam Detection",
+            "description": "ML algorithms analyze thousands of emails to learn patterns that distinguish spam from legitimate emails",
+            "code": "# Simple spam detection concept\nfeatures = ['contains_money', 'urgent_words', 'sender_reputation']\nif ml_model.predict(email_features) > 0.5:\n    classification = 'spam'\nelse:\n    classification = 'legitimate'"
+          }
+        ],
+        "aiConnections": [
+          "Pattern recognition in daily life",
+          "How recommendation systems work (YouTube, Netflix)",
+          "Voice assistants understanding speech"
+        ]
+      },
+      {
+        "title": "Types of Machine Learning",
+        "content": "There are three main types of machine learning: Supervised Learning (learning with examples and correct answers), Unsupervised Learning (finding hidden patterns in data), and Reinforcement Learning (learning through trial and error with rewards).",
+        "examples": [
+          {
+            "title": "Supervised Learning - Image Classification",
+            "description": "Training a model to recognize cats vs dogs using labeled images",
+            "code": "# Supervised learning example\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import RandomForestClassifier\n\n# Split data into training and testing\nX_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2)\n\n# Train the model\nmodel = RandomForestClassifier()\nmodel.fit(X_train, y_train)\n\n# Make predictions\npredictions = model.predict(X_test)"
+          },
+          {
+            "title": "Unsupervised Learning - Customer Segmentation",
+            "description": "Grouping customers based on purchasing behavior without predefined categories",
+            "code": "# Unsupervised learning example\nfrom sklearn.cluster import KMeans\nimport matplotlib.pyplot as plt\n\n# Cluster customers into groups\nkmeans = KMeans(n_clusters=3)\ncustomer_groups = kmeans.fit_predict(customer_data)\n\n# Visualize clusters\nplt.scatter(customer_data[:, 0], customer_data[:, 1], c=customer_groups)\nplt.title('Customer Segments')\nplt.show()"
+          }
+        ],
+        "aiConnections": [
+          "How Netflix recommends movies (unsupervised)",
+          "How games learn from player behavior (reinforcement)",
+          "Medical diagnosis systems (supervised)"
+        ]
+      },
+      {
+        "title": "Building Your First ML Model",
+        "content": "Let's create a simple machine learning model to predict student performance based on study hours and previous grades. This hands-on approach will help you understand the ML workflow: data preparation, model training, and evaluation.",
+        "examples": [
+          {
+            "title": "Student Performance Predictor",
+            "description": "Predict final exam scores based on study hours and attendance",
+            "code": "import pandas as pd\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.metrics import mean_squared_error\n\n# Sample student data\ndata = {\n    'study_hours': [2, 4, 6, 8, 10, 3, 5, 7, 9, 1],\n    'attendance': [60, 80, 90, 95, 98, 70, 85, 92, 96, 50],\n    'final_score': [65, 75, 85, 90, 95, 70, 80, 88, 93, 55]\n}\n\ndf = pd.DataFrame(data)\n\n# Prepare features and target\nX = df[['study_hours', 'attendance']]\ny = df['final_score']\n\n# Train the model\nmodel = LinearRegression()\nmodel.fit(X, y)\n\n# Make a prediction for a new student\nnew_student = [[6, 85]]  # 6 hours study, 85% attendance\npredicted_score = model.predict(new_student)\nprint(f'Predicted final score: {predicted_score[0]:.1f}')"
+          }
+        ],
+        "aiConnections": [
+          "Educational AI tutoring systems",
+          "Personalized learning platforms",
+          "Academic performance analytics"
+        ]
+      },
+      {
+        "title": "AI Ethics and Responsible Development",
+        "content": "As future AI developers and users, it's crucial to understand the ethical implications of AI systems. This includes issues of bias, privacy, transparency, and the impact of AI on society and employment.",
+        "examples": [
+          {
+            "title": "Bias in AI Systems",
+            "description": "Understanding how biased training data can lead to unfair AI decisions",
+            "code": "# Example of checking for bias in data\nimport pandas as pd\n\n# Analyze hiring data for potential bias\nhiring_data = pd.read_csv('hiring_decisions.csv')\n\n# Check gender distribution in successful hires\ngender_success_rate = hiring_data.groupby('gender')['hired'].mean()\nprint('Success rate by gender:')\nprint(gender_success_rate)\n\n# This analysis helps identify potential bias in hiring algorithms"
+          }
+        ],
+        "aiConnections": [
+          "Fair AI in recruitment and admissions",
+          "Privacy protection in social media algorithms",
+          "Transparent AI in healthcare decisions"
+        ]
+      },
+      {
+        "title": "Future of AI and Career Opportunities",
+        "content": "Explore the exciting career paths in AI and machine learning, from data scientist to AI ethics researcher. Understand how AI is transforming various industries and creating new opportunities.",
+        "examples": [
+          {
+            "title": "AI Career Paths",
+            "description": "Overview of different roles in the AI industry",
+            "code": "# Skills needed for different AI careers\ncareers = {\n    'Data Scientist': ['Python', 'Statistics', 'Machine Learning', 'Data Visualization'],\n    'ML Engineer': ['Python', 'TensorFlow', 'Cloud Platforms', 'Software Engineering'],\n    'AI Researcher': ['Mathematics', 'Deep Learning', 'Research Methods', 'Academic Writing'],\n    'AI Ethics Specialist': ['Philosophy', 'Law', 'AI Systems', 'Policy Analysis']\n}\n\nfor career, skills in careers.items():\n    print(f'{career}: {\", \".join(skills)}')"
+          }
+        ],
+        "aiConnections": [
+          "AI in healthcare and medicine",
+          "Autonomous vehicles and transportation",
+          "AI in creative industries (art, music, writing)"
+        ]
+      }
+    ]
+  },
+  "exercises": ["grade-10-ml-project", "grade-10-ethics-analysis"],
+  "assessmentCriteria": {
+    "knowledge": "Demonstrates understanding of ML concepts and types",
+    "application": "Successfully implements basic ML algorithms",
+    "analysis": "Critically evaluates AI applications and ethical implications",
+    "synthesis": "Connects ML concepts to real-world problems and solutions"
+  },
+  "extensions": [
+    "Research a specific AI application in your area of interest",
+    "Create a presentation on AI ethics for younger students",
+    "Design a simple ML project to solve a school or community problem"
+  ],
+  "resources": [
+    "Scikit-learn documentation and tutorials",
+    "MIT Introduction to Machine Learning course materials",
+    "AI4ALL educational resources",
+    "Google's AI Education materials"
+  ],
+  "tags": ["machine-learning", "artificial-intelligence", "python", "ethics", "data-science", "grade-10", "cbse", "icse"]
+}

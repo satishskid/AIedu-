@@ -1,0 +1,65 @@
+{
+  "id": "grade-9-python-variables",
+  "title": "Python Variables and AI Data Types - Grade 9",
+  "description": "Practice creating and using variables in Python while understanding their role in AI systems",
+  "difficulty": "intermediate",
+  "category": "programming",
+  "grade": "9",
+  "estimatedTime": 20,
+  "language": "python",
+  "aiContext": "Understanding how AI systems store and process different types of information",
+  "startingCode": "# AI Personal Assistant Data Storage\n# Complete the code to create an AI assistant that stores user information\n\n# TODO: Create variables to store user data\nuser_name = \"\"  # Store the user's name\nuser_age = 0     # Store the user's age\nuser_grade = 0.0 # Store the user's current grade\nis_premium_user = False  # Store premium status\n\n# TODO: Get input from user\n# user_name = input(\"Enter your name: \")\n# Add more input statements\n\n# TODO: Display personalized AI response\nprint(f\"Hello {user_name}! I'm your AI assistant.\")\n# Add more personalized responses",
+  "solution": "# AI Personal Assistant Data Storage\n# Complete the code to create an AI assistant that stores user information\n\n# Create variables to store user data\nuser_name = \"\"  # Store the user's name\nuser_age = 0     # Store the user's age\nuser_grade = 0.0 # Store the user's current grade\nis_premium_user = False  # Store premium status\n\n# Get input from user\nuser_name = input(\"Enter your name: \")\nuser_age = int(input(\"Enter your age: \"))\nuser_grade = float(input(\"Enter your current grade: \"))\npremium_response = input(\"Are you a premium user? (yes/no): \").lower()\nis_premium_user = premium_response == \"yes\"\n\n# Display personalized AI response\nprint(f\"Hello {user_name}! I'm your AI assistant.\")\nprint(f\"I see you're {user_age} years old with a grade of {user_grade}.\")\n\nif is_premium_user:\n    print(\"Welcome, Premium User! You have access to advanced AI features.\")\nelse:\n    print(\"You're using the free version. Upgrade for more AI capabilities!\")\n\n# AI recommendation based on data\nif user_grade >= 9.0:\n    print(\"AI Suggestion: You're doing excellent! Try advanced programming challenges.\")\nelif user_grade >= 7.0:\n    print(\"AI Suggestion: Good progress! Focus on practice exercises.\")\nelse:\n    print(\"AI Suggestion: Let's work on fundamentals together.\")",
+  "tests": [
+    {
+      "description": "Variables are properly declared",
+      "input": "",
+      "expectedBehavior": "user_name, user_age, user_grade, and is_premium_user variables exist"
+    },
+    {
+      "description": "Program accepts user input",
+      "input": "Arjun\n15\n8.5\nno",
+      "expectedOutput": "Hello Arjun! I'm your AI assistant."
+    },
+    {
+      "description": "AI provides personalized recommendations",
+      "input": "Priya\n14\n9.2\nyes",
+      "expectedOutput": "Welcome, Premium User! You have access to advanced AI features."
+    },
+    {
+      "description": "Handles different grade levels appropriately",
+      "input": "Rahul\n15\n6.8\nno",
+      "expectedOutput": "AI Suggestion: Let's work on fundamentals together."
+    }
+  ],
+  "hints": [
+    "Remember to use appropriate data types: string for names, int for age, float for grades, boolean for yes/no questions",
+    "Use input() function to get user data and convert to appropriate types using int() and float()",
+    "AI systems store user preferences and data to provide personalized experiences",
+    "Think about how voice assistants like Siri or Alexa remember your preferences"
+  ],
+  "learningObjectives": [
+    "Understand different Python data types and their uses in AI",
+    "Practice variable declaration and assignment",
+    "Learn to get user input and type conversion",
+    "Connect programming concepts to real-world AI applications"
+  ],
+  "aiConcepts": [
+    "Data storage in AI systems",
+    "User profiling and personalization",
+    "Type safety in machine learning",
+    "Data preprocessing fundamentals"
+  ],
+  "extensions": [
+    "Add more user attributes like favorite subjects, hobbies, learning style",
+    "Create a simple recommendation algorithm based on multiple user attributes",
+    "Implement data validation to ensure user inputs are reasonable",
+    "Research how real AI assistants store and use user data"
+  ],
+  "realWorldConnections": [
+    "Netflix uses similar data to recommend movies and shows",
+    "Educational apps like Khan Academy personalize learning paths",
+    "Voice assistants store user preferences for better responses",
+    "Social media platforms use user data for content curation"
+  ]
+}

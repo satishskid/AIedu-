@@ -1,0 +1,151 @@
+{
+  "id": "grade-3-block-programming-ai",
+  "title": "Block Programming with AI Friends - Grade 3",
+  "description": "Learn programming through visual blocks while discovering how AI helps us solve problems, aligned with elementary computer science standards",
+  "difficulty": "beginner",
+  "category": "block-programming",
+  "grade": "3",
+  "curriculum": ["CBSE", "ICSE", "Common Core", "CSTA K-12"],
+  "estimatedTime": 35,
+  "learningOutcomes": [
+    "Create simple programs using visual programming blocks",
+    "Understand sequence, loops, and conditions in programming",
+    "Recognize how AI uses similar programming concepts",
+    "Solve problems step-by-step like a computer"
+  ],
+  "aiIntegration": {
+    "concepts": ["AI decision making", "Smart recommendations", "Learning from examples", "Helping humans solve problems"],
+    "activities": ["AI pet simulator", "Smart sorting games", "Recommendation engine building"]
+  },
+  "content": {
+    "sections": [
+      {
+        "title": "Welcome to Block Programming!",
+        "content": "Block programming is like building with digital LEGO blocks! Each block tells the computer what to do. AI systems are built using similar building blocks that help them think and make decisions.",
+        "examples": [
+          {
+            "language": "scratch",
+            "code": "🟦 [When green flag clicked]\n🟨 [Say \"Hello! I'm your AI helper!\"]\n🟨 [Wait 2 seconds]\n🟨 [Say \"What's your favorite color?\"]\n🟦 [Ask \"Tell me your favorite color\" and wait]\n🟨 [Say \"I love that color too!\"]\n\n🤖 This is like how AI assistants:\n   - Listen to your questions\n   - Think about the answer\n   - Respond helpfully",
+            "explanation": "Just like we connect blocks to make a program, AI systems connect different thinking blocks to understand and help us!"
+          }
+        ],
+        "aiConnection": "AI chatbots like those in educational apps use similar step-by-step thinking to have conversations with students."
+      },
+      {
+        "title": "Sequences - Doing Things in Order",
+        "content": "A sequence is doing things in the right order, like following a recipe. AI systems also follow sequences to complete tasks correctly.",
+        "examples": [
+          {
+            "language": "scratch",
+            "code": "🎯 Making an AI Pet Happy:\n\n🟦 [When green flag clicked]\n🟨 [Say \"Meet your AI pet!\"]\n🟪 [Change costume to \"sleepy pet\"]\n🟨 [Say \"Your pet is sleepy...\"]\n🟪 [Wait 2 seconds]\n🟪 [Change costume to \"happy pet\"]\n🟨 [Say \"Now your pet is awake and happy!\"]\n🎵 [Play sound \"meow\"]\n\n🤖 Real AI pets (like Tamagotchi apps):\n   1. Check pet's needs\n   2. Show what pet wants\n   3. Wait for your care\n   4. Update pet's happiness",
+            "explanation": "Sequences help both our programs and AI systems do things in the right order to achieve goals!"
+          }
+        ],
+        "aiConnection": "Virtual assistants follow sequences when they process your voice commands: hear → understand → search → respond."
+      },
+      {
+        "title": "Loops - Repeating Actions",
+        "content": "Loops help us repeat actions without writing the same blocks over and over. AI systems use loops to keep learning and improving!",
+        "examples": [
+          {
+            "language": "scratch",
+            "code": "🔄 AI Learning Loop:\n\n🟦 [When green flag clicked]\n🟨 [Say \"I'm an AI that learns patterns!\"]\n🟫 [Repeat 5 times]\n   🟨 [Ask \"What's your favorite animal?\" and wait]\n   🟨 [Say \"Interesting! I'm learning about animals!\"]\n   🟪 [Wait 1 second]\n🟨 [Say \"Now I know 5 animals you like!\"]\n🟨 [Say \"I can recommend animal videos for you!\"]\n\n🤖 How YouTube AI works:\n   🔄 Keep watching what videos you like\n   🔄 Keep learning your preferences\n   🔄 Keep suggesting better videos",
+            "explanation": "Loops help AI systems continuously learn from our actions to get better at helping us!"
+          }
+        ],
+        "aiConnection": "Machine learning uses loops to repeatedly analyze data and improve predictions, just like how we practice to get better at skills."
+      },
+      {
+        "title": "Conditions - Making Smart Decisions",
+        "content": "Conditions help programs make smart choices based on different situations. This is exactly how AI systems make decisions to help us!",
+        "examples": [
+          {
+            "language": "scratch",
+            "code": "🧠 Smart AI Helper Decisions:\n\n🟦 [When green flag clicked]\n🟨 [Ask \"How are you feeling today?\" and wait]\n🟩 [If answer = \"happy\"]\n   🟨 [Say \"Great! Let's play a fun game!\"]\n   🎵 [Play sound \"celebration\"]\n🟩 [Else if answer = \"sad\"]\n   🟨 [Say \"I'm sorry. Let me cheer you up!\"]\n   🟪 [Change costume to \"funny face\"]\n🟩 [Else if answer = \"tired\"]\n   🟨 [Say \"Let's do something relaxing!\"]\n   🎵 [Play sound \"calm music\"]\n🟩 [Else]\n   🟨 [Say \"Tell me more about how you feel!\"]\n\n🤖 Real AI examples:\n   📱 Phone brightness adjusts to lighting\n   🎵 Music apps suggest songs for your mood\n   🎮 Games adjust difficulty based on your skill",
+            "explanation": "Conditions help AI systems understand different situations and respond appropriately, just like a good friend would!"
+          }
+        ],
+        "aiConnection": "AI recommendation systems use conditions to decide what content to show you based on your preferences and behavior."
+      },
+      {
+        "title": "Building Your Own AI Helper",
+        "content": "Now let's combine sequences, loops, and conditions to create our own AI helper that learns and adapts!",
+        "examples": [
+          {
+            "language": "scratch",
+            "code": "🤖 My Smart Study Buddy:\n\n🟦 [When green flag clicked]\n🟨 [Say \"Hi! I'm your AI Study Buddy!\"]\n🟪 [Set \"correct answers\" to 0]\n🟪 [Set \"total questions\" to 0]\n\n🟫 [Repeat 3 times]\n   🟪 [Change \"total questions\" by 1]\n   🟨 [Ask \"What is 2 + 3?\" and wait]\n   🟩 [If answer = 5]\n      🟨 [Say \"Correct! Great job!\"]\n      🟪 [Change \"correct answers\" by 1]\n   🟩 [Else]\n      🟨 [Say \"Not quite. The answer is 5!\"]\n\n🧮 [Set \"score\" to (correct answers / total questions) * 100]\n🟩 [If score > 80]\n   🟨 [Say \"Excellent! You're ready for harder problems!\"]\n🟩 [Else if score > 50]\n   🟨 [Say \"Good work! Let's practice a bit more!\"]\n🟩 [Else]\n   🟨 [Say \"Let's review the basics together!\"]\n\n🤖 Your AI buddy:\n   ✅ Asks questions\n   ✅ Keeps track of your progress\n   ✅ Adapts to your learning level\n   ✅ Encourages you to keep learning!",
+            "explanation": "This AI helper uses all our programming concepts to create a personalized learning experience, just like real educational AI!"
+          }
+        ],
+        "aiConnection": "Educational AI platforms like Khan Academy use similar logic to track student progress and provide personalized learning paths."
+      }
+    ]
+  },
+  "exercises": [
+    "grade-3-sequence-builder",
+    "grade-3-loop-master",
+    "grade-3-condition-detective",
+    "grade-3-ai-pet-creator"
+  ],
+  "assessmentCriteria": {
+    "cbseAlignment": {
+      "unit": "Introduction to Programming",
+      "topics": ["Sequential thinking", "Problem solving", "Logical reasoning"],
+      "skills": ["Following instructions", "Pattern recognition", "Creative thinking"]
+    },
+    "cstaStandards": {
+      "grade3": ["1A-AP-10", "1A-AP-11", "1A-AP-14", "1A-AP-15"],
+      "concepts": ["Algorithms", "Programming", "Data representation"]
+    },
+    "aiReadiness": {
+      "concepts": ["Decision making", "Pattern recognition", "Adaptive behavior"],
+      "applications": ["Simple AI interactions", "Understanding AI responses", "Recognizing AI in daily tools"]
+    }
+  },
+  "teacherNotes": {
+    "platform": "Use Scratch Jr. or similar visual programming environment suitable for Grade 3",
+    "scaffolding": "Start with teacher-led examples, then guided practice, finally independent creation",
+    "aiConnections": "Constantly relate programming concepts to familiar AI applications kids use",
+    "differentiation": "Provide extra visual supports for struggling learners, extension challenges for advanced students",
+    "assessment": "Focus on understanding concepts rather than perfect syntax; use peer sharing and reflection"
+  },
+  "interactiveElements": [
+    {
+      "type": "drag-drop",
+      "title": "Block Sequence Builder",
+      "description": "Drag programming blocks in the correct order to make an AI pet perform actions"
+    },
+    {
+      "type": "simulation",
+      "title": "AI Decision Tree",
+      "description": "Create decision trees that help an AI character choose appropriate responses"
+    },
+    {
+      "type": "game",
+      "title": "Loop Challenge",
+      "description": "Use loops to help an AI robot complete repetitive tasks efficiently"
+    }
+  ],
+  "parentResources": {
+    "homeActivities": [
+      "Practice giving step-by-step instructions for daily routines",
+      "Identify AI helpers in apps and devices at home",
+      "Create simple 'if-then' rules for family activities",
+      "Explore kid-friendly programming apps together"
+    ],
+    "vocabularySupport": {
+      "sequence": "Doing things in order, like steps in a recipe",
+      "loop": "Repeating the same action multiple times",
+      "condition": "Making decisions based on different situations",
+      "algorithm": "A set of steps to solve a problem"
+    }
+  },
+  "crossCurricularConnections": {
+    "mathematics": "Patterns, counting, basic arithmetic in programming contexts",
+    "science": "Cause and effect, observation, hypothesis testing through programming",
+    "language arts": "Following directions, sequencing events, storytelling through code",
+    "art": "Creative expression through programming animations and interactive stories"
+  },
+  "prerequisites": ["Basic computer mouse/touchscreen skills", "Understanding of simple sequences", "Familiarity with cause and effect"],
+  "nextLessons": ["grade-3-advanced-blocks", "grade-4-intro-variables", "grade-4-ai-ethics-basics"]
+}

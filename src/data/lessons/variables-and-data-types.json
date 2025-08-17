@@ -1,0 +1,12 @@
+{
+  "id": "variables-and-data-types",
+  "title": "Variables and Data Types",
+  "description": "Learn about different data types and how to store data in variables",
+  "difficulty": "beginner",
+  "category": "fundamentals",
+  "estimatedTime": 30,
+  "content": {
+    "introduction": "Variables are containers for storing data values. In programming, we use different data types to represent different kinds of information.",
+    "example": "let name = \"Alice\";\nlet age = 25;\nlet isStudent = true;"
+  }
+}

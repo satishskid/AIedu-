@@ -1,0 +1,98 @@
+{
+  "id": "grade-3-sequence-builder",
+  "title": "AI Pet Sequence Builder",
+  "description": "Help your AI pet complete daily activities by arranging programming blocks in the correct sequence",
+  "difficulty": "beginner",
+  "category": "block-programming",
+  "grade": "3",
+  "estimatedTime": 15,
+  "language": "scratch",
+  "learningObjectives": [
+    "Arrange programming blocks in logical sequence",
+    "Understand the importance of order in programming",
+    "Connect programming sequences to AI behavior",
+    "Practice step-by-step problem solving"
+  ],
+  "aiConcepts": [
+    "AI systems follow programmed sequences",
+    "Smart devices execute commands in order",
+    "Virtual assistants process requests step-by-step"
+  ],
+  "startingCode": "🎯 Challenge: Help your AI pet get ready for school!\n\n🤖 Available Blocks (drag in correct order):\n\n🟨 [Say \"Good morning!\"]\n🟪 [Change costume to \"brushing teeth\"]\n🟪 [Change costume to \"eating breakfast\"]\n🟪 [Change costume to \"getting dressed\"]\n🟪 [Change costume to \"ready for school\"]\n🟨 [Say \"I'm ready for a great day!\"]\n🎵 [Play sound \"happy tune\"]\n\n🎯 Your Task:\nDrag the blocks below to create the correct morning routine sequence!",
+  "solution": "🟦 [When green flag clicked]\n🟨 [Say \"Good morning!\"]\n🟪 [Change costume to \"getting dressed\"]\n🟪 [Wait 1 second]\n🟪 [Change costume to \"brushing teeth\"]\n🟪 [Wait 1 second]\n🟪 [Change costume to \"eating breakfast\"]\n🟪 [Wait 1 second]\n🟪 [Change costume to \"ready for school\"]\n🟨 [Say \"I'm ready for a great day!\"]\n🎵 [Play sound \"happy tune\"]\n\n🤖 AI Connection:\nJust like your AI pet follows this sequence, smart home devices follow sequences too:\n1. Alarm goes off\n2. Lights turn on gradually\n3. Coffee maker starts\n4. Weather report plays\n5. Music begins",
+  "tests": [
+    {
+      "description": "AI pet says good morning first",
+      "expected": "First block should be greeting",
+      "hint": "What's the first thing you do when you wake up? Your AI pet should greet you!"
+    },
+    {
+      "description": "Getting dressed comes before eating",
+      "expected": "Dress before breakfast in sequence",
+      "hint": "Think about your real morning routine - do you get dressed before or after eating?"
+    },
+    {
+      "description": "Brushing teeth is included in routine",
+      "expected": "Teeth brushing block is used",
+      "hint": "Don't forget about dental hygiene! Where does teeth brushing fit in the morning routine?"
+    },
+    {
+      "description": "AI pet ends with positive message",
+      "expected": "Final blocks show readiness and happiness",
+      "hint": "How should your AI pet feel when ready for school? End with encouragement!"
+    }
+  ],
+  "hints": [
+    "🌅 Think about your own morning routine - what order do you do things?",
+    "🤖 AI pets need to follow logical sequences just like real pets need routines",
+    "⏰ Some activities must happen before others - getting dressed before going outside!",
+    "😊 Your AI pet should start and end the day with positive energy",
+    "🔄 If something doesn't make sense, try rearranging the blocks"
+  ],
+  "extensions": [
+    {
+      "title": "Create Your Own Routine",
+      "description": "Design a bedtime routine sequence for your AI pet",
+      "difficulty": "medium"
+    },
+    {
+      "title": "Weekend vs School Day",
+      "description": "Create different sequences for different types of days",
+      "difficulty": "medium"
+    },
+    {
+      "title": "AI Pet Emotions",
+      "description": "Add emotion blocks that change based on the routine success",
+      "difficulty": "hard"
+    }
+  ],
+  "realWorldConnections": [
+    "Smart home systems that automate morning routines",
+    "AI assistants that remind you of daily tasks in order",
+    "Educational apps that guide students through learning sequences",
+    "Robot vacuum cleaners that follow cleaning sequences"
+  ],
+  "assessmentRubric": {
+    "excellent": "Correctly sequences all blocks with logical flow, explains AI connections",
+    "proficient": "Sequences most blocks correctly with minor logical issues",
+    "developing": "Attempts sequencing but has some order problems",
+    "beginning": "Needs significant support to understand sequencing concepts"
+  },
+  "teacherNotes": {
+    "preparation": "Have physical sequence cards ready for students who need tactile learning",
+    "commonMistakes": "Students often put eating before getting dressed - discuss real-world logic",
+    "differentiation": "Provide fewer blocks for struggling learners, more complex routines for advanced students",
+    "aiDiscussion": "Ask students to identify AI systems they know that follow sequences (Alexa routines, game NPCs, etc.)"
+  },
+  "vocabulary": {
+    "sequence": "A specific order of steps or actions",
+    "algorithm": "A set of rules or instructions for solving a problem",
+    "routine": "A regular sequence of activities",
+    "logical order": "Arranging things in a way that makes sense"
+  },
+  "parentSupport": {
+    "homeActivity": "Practice giving step-by-step instructions for household chores",
+    "discussion": "Talk about how smart devices in your home follow sequences (dishwasher cycles, washing machine programs)",
+    "extension": "Create a family morning routine chart together"
+  }
+}

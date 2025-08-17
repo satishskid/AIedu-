@@ -1,0 +1,127 @@
+{
+  "id": "grade-6-intro-computational-thinking",
+  "title": "Introduction to Computational Thinking and AI - Grade 6",
+  "description": "Discover how computers and AI systems think and solve problems, aligned with CBSE Class 6 Computer Science curriculum",
+  "difficulty": "beginner",
+  "category": "computational-thinking",
+  "grade": "6",
+  "curriculum": ["CBSE", "ICSE", "IGCSE", "Common Core"],
+  "estimatedTime": 40,
+  "learningOutcomes": [
+    "Understand what computational thinking means",
+    "Identify patterns in everyday problems",
+    "Break down complex problems into smaller parts",
+    "Recognize how AI uses computational thinking"
+  ],
+  "aiIntegration": {
+    "concepts": ["Pattern recognition", "Problem decomposition", "Algorithm basics", "AI in daily life"],
+    "activities": ["AI pattern games", "Smart device exploration", "Simple algorithm creation"]
+  },
+  "content": {
+    "sections": [
+      {
+        "title": "What is Computational Thinking?",
+        "content": "Computational thinking is like being a detective! It's how we solve problems step by step, just like how computers and AI systems work. Let's explore how this thinking helps us in everyday life.",
+        "examples": [
+          {
+            "language": "text",
+            "code": "Problem: Getting Ready for School\n\nStep 1: Wake up (Check time)\nStep 2: If it's a school day, then get dressed\nStep 3: Eat breakfast\nStep 4: Pack school bag\nStep 5: Leave for school\n\nThis is an ALGORITHM - a set of steps to solve a problem!",
+            "explanation": "Just like we follow steps to get ready for school, computers follow algorithms to solve problems. AI systems use similar step-by-step thinking!"
+          }
+        ],
+        "aiConnection": "AI systems like Siri or Google Assistant use computational thinking to understand your questions and provide helpful answers."
+      },
+      {
+        "title": "Pattern Recognition - Finding What's Similar",
+        "content": "Patterns are things that repeat or are similar. Our brains are amazing at finding patterns, and we can teach AI systems to do the same!",
+        "examples": [
+          {
+            "language": "text",
+            "code": "Pattern Examples:\n\n1. Weather Patterns:\n   Monday: Sunny, 25°C\n   Tuesday: Sunny, 26°C\n   Wednesday: Sunny, 24°C\n   Pattern: It's been sunny all week!\n\n2. Your Daily Routine:\n   7:00 AM - Wake up\n   7:30 AM - Breakfast\n   8:00 AM - School\n   Pattern: Same routine every school day!\n\n3. Number Patterns:\n   2, 4, 6, 8, 10...\n   Pattern: Adding 2 each time!",
+            "explanation": "AI systems like YouTube recommendations find patterns in what videos you like to suggest new ones you might enjoy!"
+          }
+        ],
+        "aiConnection": "Netflix uses pattern recognition to suggest movies based on what you and similar users have watched before."
+      },
+      {
+        "title": "Decomposition - Breaking Big Problems into Small Ones",
+        "content": "When we face a big problem, we can break it down into smaller, easier problems. This is called decomposition - like taking apart a puzzle!",
+        "examples": [
+          {
+            "language": "text",
+            "code": "Big Problem: Organizing a Class Party\n\nSmaller Problems:\n1. Choose a date and time\n2. Decide on food and drinks\n3. Plan games and activities\n4. Invite classmates\n5. Decorate the classroom\n6. Clean up afterwards\n\nEach small problem is easier to solve!",
+            "explanation": "By breaking the big problem into smaller ones, we can tackle each part step by step. AI systems do this too!"
+          }
+        ],
+        "aiConnection": "When you ask Alexa to play your favorite playlist, it breaks this down into: understand your voice → find your account → locate the playlist → start playing music."
+      },
+      {
+        "title": "Abstraction - Focusing on What's Important",
+        "content": "Abstraction means focusing on the most important details and ignoring the rest. It's like drawing a simple map that shows only the important roads!",
+        "examples": [
+          {
+            "language": "text",
+            "code": "Example: Describing Your Best Friend\n\nAll Details: Height, weight, eye color, hair color, favorite food, favorite color, birthday, address, phone number, hobbies, pets...\n\nImportant Details (Abstraction):\n- Kind and helpful\n- Loves playing cricket\n- Good at mathematics\n- Makes me laugh\n\nWe focus on what makes them special!",
+            "explanation": "Abstraction helps us focus on what really matters, just like how GPS apps show you the route without showing every single building!"
+          }
+        ],
+        "aiConnection": "When AI recognizes your face in photos, it focuses on key features like eye distance and nose shape, ignoring details like lighting or background."
+      },
+      {
+        "title": "AI in Our Daily Lives",
+        "content": "AI systems are everywhere around us, using computational thinking to help make our lives easier and more fun!",
+        "examples": [
+          {
+            "language": "text",
+            "code": "AI Examples You Use:\n\n🎵 Music Apps (Spotify, Apple Music)\n   - Pattern: Songs you like\n   - Algorithm: Suggest similar music\n\n📱 Voice Assistants (Siri, Google)\n   - Pattern: Your voice and questions\n   - Algorithm: Understand and respond\n\n🎮 Games (Candy Crush, Among Us)\n   - Pattern: Your playing style\n   - Algorithm: Adjust difficulty\n\n📚 Learning Apps (Khan Academy, Duolingo)\n   - Pattern: What you find easy/hard\n   - Algorithm: Personalize lessons",
+            "explanation": "All these AI systems use the same computational thinking skills we're learning - they just do it very fast!"
+          }
+        ],
+        "aiConnection": "Every AI system combines pattern recognition, decomposition, abstraction, and algorithms to solve problems and help users."
+      }
+    ]
+  },
+  "exercises": [
+    "grade-6-pattern-detective",
+    "grade-6-problem-breakdown",
+    "grade-6-daily-algorithms",
+    "grade-6-ai-around-us"
+  ],
+  "assessmentCriteria": {
+    "cbseAlignment": {
+      "unit": "Introduction to Computer Science",
+      "topics": ["Problem solving", "Logical thinking", "Computer applications"],
+      "skills": ["Analytical thinking", "Pattern recognition", "Problem decomposition"]
+    },
+    "aiReadiness": {
+      "concepts": ["Computational thinking fundamentals", "AI awareness", "Technology literacy"],
+      "applications": ["Identifying AI in daily life", "Basic problem solving", "Pattern recognition games"]
+    }
+  },
+  "teacherNotes": {
+    "ageAppropriate": "Use concrete examples from students' daily lives and interests",
+    "handsonActivities": "Include physical games, role-playing, and interactive demonstrations",
+    "aiIntegration": "Connect every concept to familiar AI applications students already use",
+    "differentiation": "Provide visual, auditory, and kinesthetic learning opportunities",
+    "assessment": "Use project-based assessment with real-world problem solving scenarios"
+  },
+  "interactiveElements": [
+    {
+      "type": "game",
+      "title": "Pattern Detective",
+      "description": "Find patterns in sequences of colors, numbers, and shapes"
+    },
+    {
+      "type": "simulation",
+      "title": "AI Assistant Builder",
+      "description": "Create simple if-then rules for a virtual assistant"
+    },
+    {
+      "type": "puzzle",
+      "title": "Problem Breakdown Challenge",
+      "description": "Break down complex scenarios into manageable steps"
+    }
+  ],
+  "prerequisites": ["Basic reading comprehension", "Simple mathematical operations", "Familiarity with digital devices"],
+  "nextLessons": ["grade-6-intro-scratch", "grade-6-digital-citizenship", "grade-7-block-programming"]
+}

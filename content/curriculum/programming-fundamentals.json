@@ -1,0 +1,37 @@
+{
+  "name": "Programming Fundamentals",
+  "description": "Complete programming course for beginners",
+  "version": "1.0.0",
+  "modules": [
+    {
+      "id": "basics",
+      "name": "Programming Basics",
+      "description": "Introduction to programming concepts",
+      "lessons": [
+        "intro-to-programming",
+        "variables-and-data-types",
+        "control-structures"
+      ]
+    },
+    {
+      "id": "intermediate",
+      "name": "Intermediate Concepts",
+      "description": "Functions, objects, and more",
+      "lessons": [
+        "functions",
+        "objects-and-classes",
+        "error-handling"
+      ]
+    }
+  ],
+  "metadata": {
+    "difficulty": "beginner",
+    "estimatedHours": 40,
+    "prerequisites": [],
+    "tags": [
+      "programming",
+      "fundamentals",
+      "beginner"
+    ]
+  }
+}

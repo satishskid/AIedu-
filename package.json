@@ -1,0 +1,110 @@
+{
+  "name": "eduai-tutor",
+  "version": "1.0.0",
+  "description": "AI-Powered Programming Education Platform for Schools",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 3000",
+    "build": "npm run type-check && npm run build-app && npm run build-static && npm run optimize",
+    "build-app": "vite build",
+    "build-static": "node scripts/build.cjs",
+    "type-check": "tsc --noEmit",
+    "preview": "vite preview",
+    "test": "vitest",
+    "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "optimize": "node scripts/optimize.cjs",
+    "health-check": "node scripts/health-check.cjs",
+    "generate-content": "node scripts/generate-content.cjs",
+    "setup": "node setup.cjs && npm install",
+    "setup-env": "node setup.cjs",
+    "install-deps": "npm install",
+    "deploy": "npm run build && netlify deploy --prod",
+    "deploy-preview": "npm run build && netlify deploy",
+    "analyze": "npm run build && npx vite-bundle-analyzer dist/stats.html",
+    "clean": "rimraf dist .vite node_modules/.vite"
+  },
+  "dependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
+    "@xenova/transformers": "^2.10.0",
+    "clsx": "^2.1.1",
+    "comlink": "^4.4.1",
+    "crypto-js": "^4.2.0",
+    "date-fns": "^2.30.0",
+    "dexie": "^3.2.4",
+    "framer-motion": "^10.16.16",
+    "lucide-react": "^0.294.0",
+    "onnxruntime-web": "^1.16.3",
+    "pouchdb": "^8.0.1",
+    "pouchdb-find": "^8.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.6.0",
+    "react-query": "^3.39.3",
+    "react-router-dom": "^6.20.0",
+    "recharts": "^2.8.0",
+    "tailwind-merge": "^3.3.1",
+    "workbox-window": "^7.0.0",
+    "zustand": "^4.4.7"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.2.1",
+    "@types/pouchdb": "^6.4.2",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "netlify-cli": "^17.10.1",
+    "postcss": "^8.4.32",
+    "prettier": "^3.1.1",
+    "rimraf": "^5.0.5",
+    "rollup-plugin-visualizer": "^5.11.0",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8",
+    "vite-plugin-pwa": "^0.17.4",
+    "vite-plugin-windicss": "^1.9.3",
+    "vitest": "^1.0.4"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "keywords": [
+    "education",
+    "ai",
+    "programming",
+    "schools",
+    "react",
+    "typescript",
+    "netlify"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "homepage": "https://eduai-tutor.netlify.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/eduai-tutor.git"
+  }
+}
