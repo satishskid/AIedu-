@@ -12,9 +12,10 @@ const MOCK_AI = import.meta.env.VITE_MOCK_AI === 'true'
 
 // Available AI Models (re-exported for backward compatibility)
 export const AI_MODELS_COMPAT = {
-  PHI: 'microsoft/phi-2',
-  GEMMA: 'google/gemma-2b-it',
-  QWEN: 'Qwen/Qwen2-7B-Instruct',
+  PHI: 'microsoft/Phi-3.5-mini-instruct',
+  GEMMA: 'google/gemma-2-2b-it',
+  GEMMA_LITE: 'google/gemma-2-270m-it',
+  QWEN: 'Qwen/Qwen2.5-Coder-7B-Instruct',
   CODELLAMA: 'codellama/CodeLlama-7b-Instruct-hf',
   MISTRAL: 'mistralai/Mistral-7B-Instruct-v0.1'
 } as const

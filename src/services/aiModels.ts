@@ -14,35 +14,45 @@ export interface AIModelConfig {
 
 // Available AI Models for Education
 export const AI_MODELS: Record<string, AIModelConfig> = {
-  'phi-3-mini': {
-    name: 'Microsoft PHI-3 Mini',
+  'phi-3.5-mini': {
+    name: 'Microsoft PHI-3.5 Mini',
     provider: 'huggingface',
-    modelId: 'microsoft/Phi-3-mini-4k-instruct',
-    maxTokens: 4096,
+    modelId: 'microsoft/Phi-3.5-mini-instruct',
+    maxTokens: 128000,
     temperature: 0.7,
-    specialties: ['coding', 'math', 'logic', 'problem-solving'],
-    ageGroups: ['elementary', 'middle', 'high'],
-    languages: ['python', 'javascript', 'java', 'c++']
+    specialties: ['coding', 'math', 'logic', 'problem-solving', 'multilingual', 'reasoning'],
+    ageGroups: ['elementary', 'middle', 'high', 'college'],
+    languages: ['python', 'javascript', 'java', 'c++', 'rust', 'go']
   },
-  'gemma-2b': {
-    name: 'Google Gemma 2B',
+  'gemma-2-2b': {
+    name: 'Google Gemma 2 2B',
     provider: 'huggingface',
-    modelId: 'google/gemma-2b-it',
+    modelId: 'google/gemma-2-2b-it',
     maxTokens: 8192,
     temperature: 0.6,
-    specialties: ['general-education', 'explanations', 'creative-writing'],
+    specialties: ['general-education', 'explanations', 'creative-writing', 'safety-focused'],
     ageGroups: ['elementary', 'middle'],
     languages: ['python', 'scratch', 'blockly']
   },
-  'qwen-1.5-chat': {
-    name: 'Qwen 1.5 Chat',
+  'gemma-3-270m': {
+    name: 'Google Gemma 3 270M',
     provider: 'huggingface',
-    modelId: 'Qwen/Qwen1.5-7B-Chat',
-    maxTokens: 32768,
+    modelId: 'google/gemma-2-270m-it',
+    maxTokens: 8192,
+    temperature: 0.6,
+    specialties: ['lightweight', 'basic-concepts', 'quick-responses', 'resource-efficient'],
+    ageGroups: ['elementary'],
+    languages: ['python', 'scratch']
+  },
+  'qwen-2.5-coder': {
+    name: 'Qwen 2.5 Coder',
+    provider: 'huggingface',
+    modelId: 'Qwen/Qwen2.5-Coder-7B-Instruct',
+    maxTokens: 131072,
     temperature: 0.8,
-    specialties: ['multilingual', 'cultural-context', 'advanced-topics'],
+    specialties: ['coding', 'code-generation', 'code-reasoning', 'code-fixing', 'multilingual'],
     ageGroups: ['middle', 'high', 'college'],
-    languages: ['python', 'javascript', 'java', 'c++', 'go']
+    languages: ['python', 'javascript', 'java', 'c++', 'go', 'rust', 'typescript']
   },
   'codellama-instruct': {
     name: 'Code Llama Instruct',
@@ -156,23 +166,23 @@ export class EnhancedAIService {
 
     // Age-based model selection
     if (context.lessonId?.includes('k2') || context.lessonId?.includes('grade-1') || context.lessonId?.includes('grade-2')) {
-      return AI_MODELS['gemma-2b'] // Best for young learners
+      return AI_MODELS['gemma-3-270m'] // Lightweight for young learners
     }
     
     if (context.lessonId?.includes('grade-3') || context.lessonId?.includes('grade-4') || context.lessonId?.includes('grade-5')) {
-      return AI_MODELS['gemma-2b'] // Good for elementary
+      return AI_MODELS['gemma-2-2b'] // Good for elementary
     }
 
     if (context.lessonId?.includes('grade-6') || context.lessonId?.includes('grade-7') || context.lessonId?.includes('grade-8')) {
-      return AI_MODELS['phi-3-mini'] // Good for middle school
+      return AI_MODELS['phi-3.5-mini'] // Good for middle school
     }
 
     // For high school and advanced topics
     if (codeLanguage && ['python', 'javascript', 'java'].includes(codeLanguage)) {
-      return AI_MODELS['codellama-instruct'] // Best for coding
+      return AI_MODELS['qwen-2.5-coder'] // Best for coding with latest Qwen
     }
 
-    return AI_MODELS['qwen-1.5-chat'] // Default for advanced topics
+    return AI_MODELS['phi-3.5-mini'] // Default for advanced topics
   }
 
   // Build educational prompt
