@@ -134,10 +134,16 @@ export const LessonCatalog: React.FC = () => {
       // List of available lesson files
       const lessonIds = [
         'k2-smart-helpers-around-us',
+        'smart-helpers',
         'grade-3-block-programming-ai',
+        'block-programming-ai',
         'grade-6-intro-computational-thinking',
+        'computational-thinking-ai-ethics',
         'grade-7-data-structures-ai-ethics',
         'grade-9-python-fundamentals',
+        'variables-and-data-types',
+        'control-structures',
+        'intro-to-programming',
         'grade-10-machine-learning-intro',
         'grade-10-machine-learning-projects'
       ]

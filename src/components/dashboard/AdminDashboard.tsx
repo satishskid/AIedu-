@@ -34,6 +34,8 @@ import { LoadingSpinner } from '../common/LoadingSpinner'
 import { useAnalytics } from '../../hooks/useAnalytics'
 import { useUserManagement } from '../../hooks/useUserManagement'
 import { useProgressTracking } from '../../hooks/useProgressTracking'
+import { AddUserModal } from '../admin/AddUserModal'
+import { CreateLicenseModal } from '../admin/CreateLicenseModal'
 
 interface SystemStats {
   totalUsers: number
@@ -85,6 +87,8 @@ export const AdminDashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'organizations' | 'system' | 'analytics'>('overview')
   const [searchTerm, setSearchTerm] = useState('')
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false)
+  const [isCreateLicenseModalOpen, setIsCreateLicenseModalOpen] = useState(false)
   
   // Mock data - in real app, this would come from API
   const [adminData, setAdminData] = useState({
@@ -473,9 +477,19 @@ export const AdminDashboard: React.FC = () => {
                     <Download className="w-4 h-4" />
                     <span>Export</span>
                   </button>
-                  <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                  <button 
+                    onClick={() => setIsAddUserModalOpen(true)}
+                    className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                  >
                     <Plus className="w-4 h-4" />
                     <span>Add User</span>
+                  </button>
+                  <button 
+                    onClick={() => setIsCreateLicenseModalOpen(true)}
+                    className="flex items-center space-x-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                  >
+                    <Shield className="w-4 h-4" />
+                    <span>Create License</span>
                   </button>
                 </div>
               </div>
@@ -719,6 +733,26 @@ export const AdminDashboard: React.FC = () => {
           </div>
         )}
       </div>
+      
+      {/* Add User Modal */}
+      <AddUserModal 
+        isOpen={isAddUserModalOpen}
+        onClose={() => setIsAddUserModalOpen(false)}
+        onUserCreated={() => {
+          setIsAddUserModalOpen(false)
+          // Refresh user data if needed
+        }}
+      />
+      
+      {/* Create License Modal */}
+      <CreateLicenseModal 
+        isOpen={isCreateLicenseModalOpen}
+        onClose={() => setIsCreateLicenseModalOpen(false)}
+        onLicenseCreated={() => {
+          setIsCreateLicenseModalOpen(false)
+          // Refresh license data if needed
+        }}
+      />
     </div>
   )
 }

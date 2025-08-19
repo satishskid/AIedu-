@@ -188,6 +188,7 @@ const App: React.FC = () => {
   }
 
   // Main application
+  
   return (
     <Router>
       <Suspense
