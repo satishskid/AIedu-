@@ -32,53 +32,20 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Redirects for SPA
+# Redirects for SPA - React Router handling
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
 
+# All other routes should go to React app for client-side routing
 [[redirects]]
-  from = "/app/*"
+  from = "/*"
   to = "/index.html"
   status = 200
 
-[[redirects]]
-  from = "/admin/*"
-  to = "/index.html"
-  status = 200
-
-# Static pages
-[[redirects]]
-  from = "/"
-  to = "/static-pages/landing.html"
-  status = 200
-
-[[redirects]]
-  from = "/request-license"
-  to = "/static-pages/request-license.html"
-  status = 200
-
-[[redirects]]
-  from = "/support"
-  to = "/static-pages/support.html"
-  status = 200
-
-[[redirects]]
-  from = "/dashboard"
-  to = "/static-pages/admin.html"
-  status = 200
-
-# Form success redirects
-[[redirects]]
-  from = "/license-success"
-  to = "/static-pages/request-license.html?success=true"
-  status = 200
-
-[[redirects]]
-  from = "/support-success" 
-  to = "/static-pages/support.html?success=true"
-  status = 200
+# Form success redirects handled by React Router
+# These will be managed by the client-side application
 
 # Security headers
 [[headers]]
@@ -122,11 +89,8 @@
     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type, Authorization"
 
-# Error pages
-[[redirects]]
-  from = "/*"
-  to = "/404.html"
-  status = 404
+# Error pages handled by React Router
+# 404 errors will be managed by the client-side application
 
 # Environment-specific redirects
 [context.production]
