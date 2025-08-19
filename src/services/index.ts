@@ -14,7 +14,7 @@ export type {
   LicenseActivationResult
 } from './license'
 
-export { aiService, formatAIResponse, extractCodeFromResponse, calculateTokens } from './ai'
+export { aiService, formatAIResponse, extractCodeFromResponse, calculateTokensUtil as calculateTokens } from './ai'
 export type {
   AIMessage,
   AIConversation,

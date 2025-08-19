@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { 
   Menu, 
   X, 
@@ -14,7 +15,10 @@ import {
   ChevronDown,
   Zap,
   Crown,
-  Star
+  Star,
+  GraduationCap,
+  Users,
+  Shield
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { useThemeStore } from '../../store/themeStore'
@@ -28,6 +32,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onMenuToggle, isSidebarOpen }) => {
+  const navigate = useNavigate()
   const { user, logout } = useAuthStore()
   const { theme, setTheme, toggleSidebar } = useThemeStore()
   const { licenseInfo } = useLicenseStore()
@@ -67,6 +72,31 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle, isSidebarOpen }) =
   const handleThemeChange = (newTheme: 'light' | 'dark' | 'system') => {
     setTheme(newTheme)
     setShowThemeMenu(false)
+  }
+  
+  const handleProfileClick = () => {
+    navigate('/app/profile')
+    setShowUserMenu(false)
+  }
+  
+  const handleSettingsClick = () => {
+    navigate('/app/settings')
+    setShowUserMenu(false)
+  }
+  
+  const handleStudentDashboard = () => {
+    navigate('/app/dashboard')
+    setShowUserMenu(false)
+  }
+  
+  const handleTeacherDashboard = () => {
+    navigate('/app/teacher/dashboard')
+    setShowUserMenu(false)
+  }
+  
+  const handleAdminDashboard = () => {
+    navigate('/app/admin/dashboard')
+    setShowUserMenu(false)
   }
   
   const getThemeIcon = () => {
@@ -332,9 +362,42 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle, isSidebarOpen }) =
                 </p>
               </div>
               
+              {/* Role-based Dashboard Navigation */}
+              {(user?.role === 'teacher' || user?.role === 'admin') && (
+                <>
+                  <button
+                    className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2 text-gray-700 dark:text-gray-300"
+                    onClick={handleStudentDashboard}
+                  >
+                    <GraduationCap className="w-4 h-4" />
+                    <span>Student Dashboard</span>
+                  </button>
+                  
+                  <button
+                    className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2 text-gray-700 dark:text-gray-300"
+                    onClick={handleTeacherDashboard}
+                  >
+                    <Users className="w-4 h-4" />
+                    <span>Teacher Dashboard</span>
+                  </button>
+                  
+                  {user?.role === 'admin' && (
+                    <button
+                      className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2 text-gray-700 dark:text-gray-300"
+                      onClick={handleAdminDashboard}
+                    >
+                      <Shield className="w-4 h-4" />
+                      <span>Admin Dashboard</span>
+                    </button>
+                  )}
+                  
+                  <div className="border-t border-gray-200 dark:border-gray-700 my-1" />
+                </>
+              )}
+              
               <button
                 className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2 text-gray-700 dark:text-gray-300"
-                onClick={() => setShowUserMenu(false)}
+                onClick={handleProfileClick}
               >
                 <User className="w-4 h-4" />
                 <span>Profile</span>
@@ -342,7 +405,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle, isSidebarOpen }) =
               
               <button
                 className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2 text-gray-700 dark:text-gray-300"
-                onClick={() => setShowUserMenu(false)}
+                onClick={handleSettingsClick}
               >
                 <Settings className="w-4 h-4" />
                 <span>Settings</span>

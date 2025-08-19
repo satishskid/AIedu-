@@ -151,11 +151,9 @@ class HuggingFaceService {
 // Enhanced AI Service with Real Model Integration
 export class EnhancedAIService {
   private huggingFace: HuggingFaceService
-  private mockMode: boolean
 
   constructor() {
     this.huggingFace = new HuggingFaceService()
-    this.mockMode = import.meta.env.VITE_MOCK_AI === 'true'
   }
 
   // Select best model for the request
@@ -235,10 +233,6 @@ export class EnhancedAIService {
   // Generate AI tutor response
   async generateTutorResponse(request: AITutorRequest): Promise<AITutorResponse> {
     try {
-      if (this.mockMode) {
-        return this.getMockResponse(request)
-      }
-
       const model = this.selectModel(request)
       const prompt = this.buildPrompt(request, model)
 
@@ -280,8 +274,7 @@ export class EnhancedAIService {
       }
     } catch (error) {
       console.error('AI service error:', error)
-      // Fallback to mock response on error
-      return this.getMockResponse(request)
+      throw error
     }
   }
 
@@ -379,35 +372,7 @@ Format the response as a structured lesson plan with clear objectives, activitie
   }
 
   // Helper methods
-  private getMockResponse(request: AITutorRequest): AITutorResponse {
-    const responses = [
-      "That's a great question! Let me help you understand this concept step by step.",
-      "I can see you're working hard on this. Here's how we can approach this problem.",
-      "Excellent thinking! Let's explore this topic together."
-    ]
-
-    const aiMessage: AIMessage = {
-      id: Date.now().toString(),
-      role: 'assistant',
-      content: responses[Math.floor(Math.random() * responses.length)],
-      timestamp: new Date().toISOString(),
-      metadata: {
-        model: 'Mock AI',
-        tokens: 50,
-        confidence: 0.8
-      }
-    }
-
-    return {
-      message: aiMessage,
-      suggestions: [],
-      codeSnippets: [],
-      resources: [],
-      followUpQuestions: ['What would you like to learn next?', 'Do you have any other questions?'],
-      confidence: 0.8,
-      tokensUsed: 100
-    }
-  }
+  // Mock response method removed - using only real HuggingFace integration
 
   private generateSuggestions(response: string, request: AITutorRequest): AISuggestion[] {
     // Generate contextual suggestions based on the response

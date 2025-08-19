@@ -1,4 +1,4 @@
-import { apiClient, API_ENDPOINTS, ApiError } from './api'
+import { apiClient, ApiError } from './api'
 import { licenseService } from './license'
 
 // Sync Types

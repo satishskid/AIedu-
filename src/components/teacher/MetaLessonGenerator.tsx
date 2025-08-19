@@ -17,10 +17,93 @@ import {
 } from 'lucide-react'
 import { enhancedAIService } from '../../services/aiModels'
 import { Button } from '../ui/button'
-import { Input } from '../ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { toast } from 'react-hot-toast'
+
+// UI Components
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  className?: string
+}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, ...props }, ref) => (
+    <input
+      ref={ref}
+      className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${className || ''}`}
+      {...props}
+    />
+  )
+)
+Input.displayName = 'Input'
+
+interface CardProps {
+  children: React.ReactNode
+  className?: string
+}
+
+const Card: React.FC<CardProps> = ({ children, className }) => (
+  <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className || ''}`}>
+    {children}
+  </div>
+)
+
+const CardHeader: React.FC<CardProps> = ({ children, className }) => (
+  <div className={`px-6 py-4 border-b border-gray-200 ${className || ''}`}>
+    {children}
+  </div>
+)
+
+const CardTitle: React.FC<CardProps> = ({ children, className }) => (
+  <h3 className={`text-lg font-semibold text-gray-900 ${className || ''}`}>
+    {children}
+  </h3>
+)
+
+const CardContent: React.FC<CardProps> = ({ children, className }) => (
+  <div className={`px-6 py-4 ${className || ''}`}>
+    {children}
+  </div>
+)
+
+interface SelectProps {
+  value: string
+  onValueChange: (value: string) => void
+  children: React.ReactNode
+}
+
+const Select: React.FC<SelectProps> = ({ value, onValueChange, children }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    onValueChange(e.target.value)
+  }
+  
+  return (
+    <select
+      value={value}
+      onChange={handleChange}
+      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      {children}
+    </select>
+  )
+}
+
+const SelectTrigger: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <>{children}</>
+)
+
+const SelectValue: React.FC = () => null
+
+const SelectContent: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <>{children}</>
+)
+
+interface SelectItemProps {
+  value: string
+  children: React.ReactNode
+}
+
+const SelectItem: React.FC<SelectItemProps> = ({ value, children }) => (
+  <option value={value}>{children}</option>
+)
 
 interface StudentProfile {
   id: string
@@ -284,7 +367,7 @@ const MetaLessonGenerator: React.FC = () => {
                   </label>
                   <Input
                     value={lessonRequest.topic}
-                    onChange={(e) => setLessonRequest({...lessonRequest, topic: e.target.value})}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLessonRequest({...lessonRequest, topic: e.target.value})}
                     placeholder="e.g., Introduction to Python Variables"
                   />
                 </div>
@@ -295,7 +378,7 @@ const MetaLessonGenerator: React.FC = () => {
                   </label>
                   <Select
                     value={lessonRequest.gradeLevel}
-                    onValueChange={(value) => setLessonRequest({...lessonRequest, gradeLevel: value})}
+                    onValueChange={(value: string) => setLessonRequest({...lessonRequest, gradeLevel: value})}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -317,7 +400,7 @@ const MetaLessonGenerator: React.FC = () => {
                   <Input
                     type="number"
                     value={lessonRequest.duration}
-                    onChange={(e) => setLessonRequest({...lessonRequest, duration: parseInt(e.target.value) || 45})}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLessonRequest({...lessonRequest, duration: parseInt(e.target.value) || 45})}
                     min="15"
                     max="180"
                   />
@@ -335,7 +418,7 @@ const MetaLessonGenerator: React.FC = () => {
                   <div key={index} className="flex items-center space-x-2">
                     <Input
                       value={objective}
-                      onChange={(e) => updateArrayField(
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateArrayField(
                         lessonRequest.learningObjectives,
                         index,
                         e.target.value,
@@ -383,7 +466,7 @@ const MetaLessonGenerator: React.FC = () => {
                 <div key={index} className="flex items-center space-x-2">
                   <Input
                     value={concept}
-                    onChange={(e) => updateArrayField(
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateArrayField(
                       lessonRequest.aiConcepts,
                       index,
                       e.target.value,
@@ -468,7 +551,7 @@ const MetaLessonGenerator: React.FC = () => {
                           </label>
                           <Input
                             value={profile.name}
-                            onChange={(e) => updateStudentProfile(profile.id, { name: e.target.value })}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateStudentProfile(profile.id, { name: e.target.value })}
                             placeholder="Student name"
                           />
                         </div>
@@ -479,7 +562,7 @@ const MetaLessonGenerator: React.FC = () => {
                           </label>
                           <Select
                             value={profile.learningStyle}
-                            onValueChange={(value: any) => updateStudentProfile(profile.id, { learningStyle: value })}
+                            onValueChange={(value: string) => updateStudentProfile(profile.id, { learningStyle: value as 'visual' | 'auditory' | 'kinesthetic' | 'mixed' })}
                           >
                             <SelectTrigger>
                               <SelectValue />
@@ -501,7 +584,7 @@ const MetaLessonGenerator: React.FC = () => {
                         </label>
                         <Select
                           value={profile.currentLevel}
-                          onValueChange={(value: any) => updateStudentProfile(profile.id, { currentLevel: value })}
+                          onValueChange={(value: string) => updateStudentProfile(profile.id, { currentLevel: value as 'beginner' | 'intermediate' | 'advanced' })}
                         >
                           <SelectTrigger>
                             <SelectValue />
@@ -523,7 +606,7 @@ const MetaLessonGenerator: React.FC = () => {
                           <div key={index} className="flex items-center space-x-2 mb-2">
                             <Input
                               value={strength}
-                              onChange={(e) => {
+                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 const newStrengths = [...profile.strengths]
                                 newStrengths[index] = e.target.value
                                 updateStudentProfile(profile.id, { strengths: newStrengths })
@@ -563,7 +646,7 @@ const MetaLessonGenerator: React.FC = () => {
                           <div key={index} className="flex items-center space-x-2 mb-2">
                             <Input
                               value={interest}
-                              onChange={(e) => {
+                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 const newInterests = [...profile.interests]
                                 newInterests[index] = e.target.value
                                 updateStudentProfile(profile.id, { interests: newInterests })

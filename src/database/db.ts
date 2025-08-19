@@ -13,7 +13,11 @@ export const DB_CONFIG = {
     conversations: 'conversations',
     preferences: 'preferences',
     cache: 'cache',
-    sync: 'sync'
+    sync: 'sync',
+    pointsTransactions: 'pointsTransactions',
+    pointsRewards: 'pointsRewards',
+    userPointsRewards: 'userPointsRewards',
+    userPointsStats: 'userPointsStats'
   }
 } as const
 
@@ -105,6 +109,45 @@ export const STORE_SCHEMAS = {
       { name: 'status', keyPath: 'status', unique: false },
       { name: 'lastModified', keyPath: 'lastModified', unique: false },
       { name: 'lastSynced', keyPath: 'lastSynced', unique: false }
+    ]
+  },
+  pointsTransactions: {
+    keyPath: 'id',
+    autoIncrement: false,
+    indexes: [
+      { name: 'userId', keyPath: 'userId', unique: false },
+      { name: 'type', keyPath: 'type', unique: false },
+      { name: 'category', keyPath: 'category', unique: false },
+      { name: 'createdAt', keyPath: 'createdAt', unique: false }
+    ]
+  },
+  pointsRewards: {
+    keyPath: 'id',
+    autoIncrement: false,
+    indexes: [
+      { name: 'type', keyPath: 'type', unique: false },
+      { name: 'category', keyPath: 'category', unique: false },
+      { name: 'rarity', keyPath: 'rarity', unique: false },
+      { name: 'available', keyPath: 'available', unique: false }
+    ]
+  },
+  userPointsRewards: {
+    keyPath: 'id',
+    autoIncrement: false,
+    indexes: [
+      { name: 'userId', keyPath: 'userId', unique: false },
+      { name: 'rewardId', keyPath: 'rewardId', unique: false },
+      { name: 'purchasedAt', keyPath: 'purchasedAt', unique: false },
+      { name: 'userReward', keyPath: ['userId', 'rewardId'], unique: true }
+    ]
+  },
+  userPointsStats: {
+    keyPath: 'id',
+    autoIncrement: false,
+    indexes: [
+      { name: 'userId', keyPath: 'userId', unique: true },
+      { name: 'level', keyPath: 'level', unique: false },
+      { name: 'currentBalance', keyPath: 'currentBalance', unique: false }
     ]
   }
 } as const

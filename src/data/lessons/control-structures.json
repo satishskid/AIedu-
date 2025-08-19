@@ -1,12 +1,163 @@
 {
   "id": "control-structures",
-  "title": "Control Structures",
-  "description": "Understanding if statements, loops, and decision making in code",
+  "title": "Control Structures - Making Decisions and Repeating Actions",
+  "description": "Learn how to make your programs smart by using if statements, loops, and decision-making structures",
   "difficulty": "beginner",
   "category": "fundamentals",
+  "grade": "6-8",
+  "curriculum": ["Computer Science", "Programming Fundamentals", "Logic and Reasoning"],
   "estimatedTime": 45,
+  "learningOutcomes": [
+    "Understand conditional statements (if, else if, else)",
+    "Learn different types of loops (for, while)",
+    "Apply logical operators in decision making",
+    "Create programs that respond to different conditions",
+    "Combine control structures to solve complex problems"
+  ],
   "content": {
-    "introduction": "Control structures allow you to control the flow of your program execution.",
-    "example": "if (age >= 18) {\n  console.log(\"You are an adult\");\n} else {\n  console.log(\"You are a minor\");\n}"
-  }
+    "sections": [
+      {
+        "title": "What are Control Structures?",
+        "content": "Control structures are like traffic lights for your code - they control which parts of your program run and when. Just like you make decisions every day (\"If it's raining, I'll take an umbrella\"), programs need to make decisions too!"
+      },
+      {
+        "title": "Making Decisions with If Statements",
+        "content": "If statements let your program choose what to do based on different conditions. Think of them as asking yes/no questions and doing different things based on the answer.",
+        "examples": [
+          {
+            "language": "javascript",
+            "title": "Simple If Statement",
+            "content": "let age = 16;\n\nif (age >= 18) {\n    console.log(\"You can vote!\");\n} else {\n    console.log(\"You're too young to vote yet.\");\n}\n\n// Output: You're too young to vote yet."
+          },
+          {
+            "language": "python",
+            "title": "Weather Decision",
+            "content": "weather = \"sunny\"\n\nif weather == \"sunny\":\n    print(\"Let's go to the park!\")\nelif weather == \"rainy\":\n    print(\"Let's stay inside and read.\")\nelse:\n    print(\"Let's see what the day brings!\")\n\n# Output: Let's go to the park!"
+          }
+        ]
+      },
+      {
+        "title": "Multiple Conditions with Else If",
+        "content": "Sometimes you need to check multiple conditions. That's where 'else if' comes in handy - it's like having a chain of questions to ask.",
+        "examples": [
+          {
+            "language": "javascript",
+            "title": "Grade Calculator",
+            "content": "let score = 85;\n\nif (score >= 90) {\n    console.log(\"Grade: A - Excellent!\");\n} else if (score >= 80) {\n    console.log(\"Grade: B - Good job!\");\n} else if (score >= 70) {\n    console.log(\"Grade: C - Keep trying!\");\n} else if (score >= 60) {\n    console.log(\"Grade: D - Need improvement\");\n} else {\n    console.log(\"Grade: F - Let's study more\");\n}\n\n// Output: Grade: B - Good job!"
+          }
+        ]
+      },
+      {
+        "title": "Logical Operators - Combining Conditions",
+        "content": "Sometimes you need to check multiple things at once. Logical operators help you combine conditions using AND (&&), OR (||), and NOT (!).",
+        "examples": [
+          {
+            "language": "javascript",
+            "title": "Movie Theater Rules",
+            "content": "let age = 15;\nlet hasParent = true;\nlet movieRating = \"PG-13\";\n\n// Using AND operator\nif (age >= 13 && movieRating === \"PG-13\") {\n    console.log(\"You can watch this movie!\");\n}\n\n// Using OR operator\nif (age >= 17 || hasParent) {\n    console.log(\"You can watch R-rated movies!\");\n}\n\n// Using NOT operator\nif (!hasParent && age < 17) {\n    console.log(\"You need a parent for R-rated movies.\");\n}"
+          }
+        ]
+      },
+      {
+        "title": "For Loops - Repeating with a Counter",
+        "content": "For loops are perfect when you know exactly how many times you want to repeat something. It's like saying \"Do this 10 times\" or \"Count from 1 to 100\".",
+        "examples": [
+          {
+            "language": "javascript",
+            "title": "Counting to 5",
+            "content": "// Count from 1 to 5\nfor (let i = 1; i <= 5; i++) {\n    console.log(\"Count: \" + i);\n}\n\n// Output:\n// Count: 1\n// Count: 2\n// Count: 3\n// Count: 4\n// Count: 5"
+          },
+          {
+            "language": "python",
+            "title": "Multiplication Table",
+            "content": "# Create a multiplication table for 3\nfor i in range(1, 11):\n    result = 3 * i\n    print(f\"3 x {i} = {result}\")\n\n# Output:\n# 3 x 1 = 3\n# 3 x 2 = 6\n# 3 x 3 = 9\n# ... and so on"
+          }
+        ]
+      },
+      {
+        "title": "While Loops - Repeating Until a Condition Changes",
+        "content": "While loops keep running as long as a condition is true. They're like saying \"Keep doing this until something changes\".",
+        "examples": [
+          {
+            "language": "javascript",
+            "title": "Guessing Game",
+            "content": "let secretNumber = 7;\nlet guess = 0;\nlet attempts = 0;\n\nwhile (guess !== secretNumber) {\n    // In a real program, you'd get input from user\n    guess = Math.floor(Math.random() * 10) + 1;\n    attempts++;\n    \n    if (guess === secretNumber) {\n        console.log(`Correct! Found ${secretNumber} in ${attempts} attempts`);\n    } else {\n        console.log(`Guess ${guess} is wrong. Try again!`);\n    }\n}"
+          },
+          {
+            "language": "python",
+            "title": "Countdown Timer",
+            "content": "countdown = 5\n\nwhile countdown > 0:\n    print(f\"Countdown: {countdown}\")\n    countdown = countdown - 1\n\nprint(\"Blast off! 🚀\")\n\n# Output:\n# Countdown: 5\n# Countdown: 4\n# Countdown: 3\n# Countdown: 2\n# Countdown: 1\n# Blast off! 🚀"
+          }
+        ]
+      },
+      {
+        "title": "Nested Control Structures",
+        "content": "You can put control structures inside other control structures! This is called nesting, and it lets you create more complex decision-making.",
+        "examples": [
+          {
+            "language": "javascript",
+            "title": "School Day Planner",
+            "content": "let day = \"Monday\";\nlet weather = \"sunny\";\n\nif (day === \"Monday\" || day === \"Wednesday\" || day === \"Friday\") {\n    console.log(\"It's a school day!\");\n    \n    if (weather === \"sunny\") {\n        console.log(\"Perfect for outdoor PE class!\");\n    } else if (weather === \"rainy\") {\n        console.log(\"Indoor activities today.\");\n    }\n    \n    // Loop through class schedule\n    let classes = [\"Math\", \"Science\", \"English\", \"Art\"];\n    for (let i = 0; i < classes.length; i++) {\n        console.log(`Period ${i + 1}: ${classes[i]}`);\n    }\n} else {\n    console.log(\"It's the weekend! Time to relax.\");\n}"
+          }
+        ]
+      },
+      {
+        "title": "Common Mistakes and How to Avoid Them",
+        "content": "Learning control structures can be tricky at first. Here are some common mistakes and how to fix them.",
+        "examples": [
+          {
+            "title": "Infinite Loops",
+            "content": "❌ WRONG - This loop never ends:\nlet count = 0;\nwhile (count < 10) {\n    console.log(count);\n    // Forgot to increase count!\n}\n\n✅ CORRECT - Always update your condition:\nlet count = 0;\nwhile (count < 10) {\n    console.log(count);\n    count++; // This makes the loop eventually stop\n}"
+          },
+          {
+            "title": "Using = instead of ==",
+            "content": "❌ WRONG - This assigns a value instead of comparing:\nif (age = 18) { // This sets age to 18!\n    console.log(\"Adult\");\n}\n\n✅ CORRECT - Use == or === for comparison:\nif (age === 18) { // This checks if age equals 18\n    console.log(\"Adult\");\n}"
+          }
+        ]
+      },
+      {
+        "title": "Real-World Applications",
+        "content": "Control structures are everywhere in the programs you use every day! Here are some examples of how they work in real applications.",
+        "examples": [
+          {
+            "title": "Video Games",
+            "content": "• If player health <= 0, show game over screen\n• While enemies exist, keep spawning them\n• For each level completed, increase difficulty\n• If player collects power-up, increase abilities"
+          },
+          {
+            "title": "Social Media Apps",
+            "content": "• If user is logged in, show their feed\n• While scrolling, load more posts\n• For each new notification, update the counter\n• If message is inappropriate, hide it automatically"
+          },
+          {
+            "title": "Smart Home Devices",
+            "content": "• If temperature < 68°F, turn on heater\n• While motion is detected, keep lights on\n• For each hour, check security cameras\n• If door opens unexpectedly, send alert"
+          }
+        ]
+      }
+    ]
+  },
+  "exercises": [
+    {
+      "id": "age-checker",
+      "title": "Age Category Checker",
+      "description": "Write a program that categorizes people by age: Child (0-12), Teen (13-19), Adult (20-64), Senior (65+)",
+      "difficulty": "beginner",
+      "hints": ["Use if-else if statements", "Remember to check ranges carefully"]
+    },
+    {
+      "id": "number-guesser",
+      "title": "Number Guessing Game",
+      "description": "Create a simple guessing game where the computer picks a number and gives hints",
+      "difficulty": "intermediate",
+      "hints": ["Use a while loop", "Give 'higher' or 'lower' hints"]
+    },
+    {
+      "id": "pattern-printer",
+      "title": "Pattern Printer",
+      "description": "Use nested loops to print patterns like stars, numbers, or shapes",
+      "difficulty": "intermediate",
+      "hints": ["Use nested for loops", "Think about rows and columns"]
+    }
+  ],
+  "prerequisites": ["Basic programming concepts", "Variables and data types", "Basic math operations"],
+  "nextLessons": ["functions-and-methods", "arrays-and-lists", "problem-solving-with-code"]
 }

@@ -61,7 +61,7 @@ const navigationItems: NavItem[] = [
         id: 'all-lessons',
         label: 'All Lessons',
         icon: BookOpen,
-        path: '/lessons'
+        path: '/app/lessons'
       },
       {
         id: 'my-progress',

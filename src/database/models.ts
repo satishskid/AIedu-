@@ -444,6 +444,56 @@ export interface AchievementMetadata {
   lastEarnedAt?: string
 }
 
+// Points and Gamification models
+export interface PointsTransaction extends BaseModel {
+  userId: string
+  type: 'earned' | 'spent' | 'bonus' | 'penalty'
+  amount: number
+  reason: string
+  category: 'lesson' | 'exercise' | 'quiz' | 'achievement' | 'streak' | 'social' | 'bonus'
+  metadata?: Record<string, any>
+}
+
+export interface PointsReward extends BaseModel {
+  name: string
+  description: string
+  cost: number
+  type: 'cosmetic' | 'functional' | 'content' | 'social'
+  icon: string
+  available: boolean
+  category: string
+  rarity: 'common' | 'rare' | 'epic' | 'legendary'
+  metadata?: Record<string, any>
+}
+
+export interface UserPointsReward extends BaseModel {
+  userId: string
+  rewardId: string
+  purchasedAt: string
+  transactionId: string
+}
+
+export interface PointsLevel {
+  level: number
+  name: string
+  minPoints: number
+  maxPoints: number
+  rewards: string[]
+  badge: string
+  color: string
+}
+
+export interface UserPointsStats extends BaseModel {
+  userId: string
+  totalEarned: number
+  totalSpent: number
+  currentBalance: number
+  currentStreak: number
+  longestStreak: number
+  level: number
+  lastStreakDate?: string
+}
+
 // Project models
 export interface Project extends BaseModel {
   userId: string

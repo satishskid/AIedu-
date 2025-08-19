@@ -29,6 +29,7 @@ export const UserLogin: React.FC<UserLoginProps> = ({ onAuthenticated }) => {
   
   const [mode, setMode] = useState<AuthMode>('login')
   const [showPassword, setShowPassword] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -87,7 +88,7 @@ export const UserLogin: React.FC<UserLoginProps> = ({ onAuthenticated }) => {
     let success = false
     
     if (mode === 'login') {
-      success = await login(formData.email, formData.password)
+      success = await login(formData.email, formData.password, rememberMe)
     } else {
       success = await register({
         email: formData.email,
@@ -104,7 +105,7 @@ export const UserLogin: React.FC<UserLoginProps> = ({ onAuthenticated }) => {
   }
   
   const handleDemoLogin = async (email: string, password: string) => {
-    const success = await login(email, password)
+    const success = await login(email, password, false) // Demo accounts don't need remember me
     if (success && onAuthenticated) {
       onAuthenticated()
     }
@@ -303,6 +304,23 @@ export const UserLogin: React.FC<UserLoginProps> = ({ onAuthenticated }) => {
                 </p>
               )}
             </div>
+            
+            {/* Remember me checkbox (only for login) */}
+            {mode === 'login' && (
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  disabled={isLoading}
+                />
+                <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                  Remember me for 24 hours
+                </label>
+              </div>
+            )}
             
             {/* Error message */}
             {error && (

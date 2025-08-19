@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Users,
   BookOpen,
@@ -25,6 +26,9 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { LoadingSpinner } from '../common/LoadingSpinner'
+import { useAnalytics } from '../../hooks/useAnalytics'
+import { useUserManagement } from '../../hooks/useUserManagement'
+import { useProgressTracking } from '../../hooks/useProgressTracking'
 
 interface Student {
   id: string
@@ -63,6 +67,10 @@ interface Lesson {
 
 export const TeacherDashboard: React.FC = () => {
   const { user } = useAuthStore()
+  const navigate = useNavigate()
+  const analytics = useAnalytics()
+  const userManagement = useUserManagement()
+  const progressTracking = useProgressTracking()
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'overview' | 'students' | 'lessons' | 'analytics'>('overview')
   const [searchTerm, setSearchTerm] = useState('')
@@ -85,6 +93,10 @@ export const TeacherDashboard: React.FC = () => {
   })
   
   useEffect(() => {
+    // Track dashboard visit
+    analytics.trackPageView('teacher_dashboard', 'Teacher Dashboard')
+    analytics.trackEngagement('session_start', { feature: 'teacher_dashboard' })
+    
     // Simulate loading data
     const loadData = async () => {
       setIsLoading(true)
@@ -553,7 +565,17 @@ export const TeacherDashboard: React.FC = () => {
                     </div>
                     
                     <div className="flex space-x-2">
-                      <button className="p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                      <button 
+                        onClick={() => {
+                          // Track lesson preview
+                          analytics.trackEngagement('feature_use', {
+                            feature: 'lesson_preview'
+                          })
+                          navigate(`/app/lesson/${lesson.id}`)
+                        }}
+                        className="p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                        title="Preview lesson"
+                      >
                         <Eye className="w-4 h-4" />
                       </button>
                       <button className="p-2 text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors">
@@ -647,3 +669,5 @@ export const TeacherDashboard: React.FC = () => {
     </div>
   )
 }
+
+export default TeacherDashboard

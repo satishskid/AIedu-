@@ -31,6 +31,9 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { LoadingSpinner } from '../common/LoadingSpinner'
+import { useAnalytics } from '../../hooks/useAnalytics'
+import { useUserManagement } from '../../hooks/useUserManagement'
+import { useProgressTracking } from '../../hooks/useProgressTracking'
 
 interface SystemStats {
   totalUsers: number
@@ -76,6 +79,9 @@ interface SystemAlert {
 
 export const AdminDashboard: React.FC = () => {
   const { user } = useAuthStore()
+  const analytics = useAnalytics()
+  const userManagement = useUserManagement()
+  const progressTracking = useProgressTracking()
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'organizations' | 'system' | 'analytics'>('overview')
   const [searchTerm, setSearchTerm] = useState('')
@@ -101,6 +107,10 @@ export const AdminDashboard: React.FC = () => {
   })
   
   useEffect(() => {
+    // Track dashboard visit
+    analytics.trackPageView('admin_dashboard', 'Admin Dashboard')
+    analytics.trackEngagement('session_start', { feature: 'admin_dashboard' })
+    
     // Simulate loading data
     const loadData = async () => {
       setIsLoading(true)
@@ -712,3 +722,5 @@ export const AdminDashboard: React.FC = () => {
     </div>
   )
 }
+
+export default AdminDashboard

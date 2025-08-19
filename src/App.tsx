@@ -1,18 +1,33 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LoadingSpinner } from './components/common/LoadingSpinner'
 import LicenseActivation from './components/auth/LicenseActivation'
+import { UserLogin } from './components/auth/UserLogin'
 import { useLicense } from './hooks/useLicense'
 import { usePerformance } from './hooks/usePerformance'
+import { useSessionManager } from './hooks/useSessionManager'
 import { ErrorFallback } from './components/common/ErrorFallback'
+import MainLayout from './components/layout/MainLayout'
+import { useAuthStore } from './store/authStore'
+import UserProfile from './components/user/UserProfile'
+import UserSettings from './components/user/UserSettings'
+import { initializeServices } from './services'
+import { analytics } from './services/analytics'
+import { monitoring } from './services/monitoring'
 
 // Lazy load components for better performance
 const StudentDashboard = lazy(() => import('./components/dashboard/StudentDashboard'))
-// Note: TeacherDashboard and AdminDashboard components need to be created
-// const TeacherDashboard = lazy(() => import('./components/dashboard/TeacherDashboard'))
-// const AdminDashboard = lazy(() => import('./components/dashboard/AdminDashboard'))
+const TeacherDashboard = lazy(() => import('./components/dashboard/TeacherDashboard'))
+const AdminDashboard = lazy(() => import('./components/dashboard/AdminDashboard'))
 const LessonViewer = lazy(() => import('./components/lesson/LessonViewer'))
+const LessonCatalog = lazy(() => import('./components/lessons/LessonCatalog'))
+
+// Wrapper component to use useParams hook
+const LessonViewerWrapper: React.FC = () => {
+  const { lessonId } = useParams<{ lessonId: string }>()
+  return <LessonViewer lessonId={lessonId || ''} />
+}
 
 interface AppState {
   isInitialized: boolean
@@ -26,8 +41,12 @@ const App: React.FC = () => {
     hasError: false
   })
 
-  const { licenseStatus, initializeLicense, isValidating } = useLicense()
+  const { licenseStatus, isValidating, initializeLicense } = useLicense()
   const { measureRender } = usePerformance()
+  const { isAuthenticated, checkAuthStatus } = useAuthStore()
+  
+  // Initialize session management
+  useSessionManager()
 
   useEffect(() => {
     initializeApp()
@@ -36,18 +55,39 @@ const App: React.FC = () => {
   const initializeApp = async () => {
     try {
       measureRender('app-initialization-start')
+       
+      // Initialize all services first
+      await initializeServices()
       
+      // Initialize monitoring and analytics
+      await monitoring.initialize()
+      await analytics.initialize()
+      
+      // Track app initialization
+      analytics.trackUser('app_initialized', 'system', 'App initialization completed')
+       
+      // Check authentication status
+      await checkAuthStatus()
+       
       // Initialize license system
       await initializeLicense()
-      
+       
       // Perform health checks
       await performHealthChecks()
-      
+       
       setAppState({ isInitialized: true, hasError: false })
       measureRender('app-initialization-complete')
       
     } catch (error) {
       console.error('App initialization failed:', error)
+      
+      // Track initialization error
+      monitoring.reportError(error as Error, {
+        level: 'error',
+        tags: { context: 'app_initialization' },
+        extra: { timestamp: new Date().toISOString() }
+      })
+      
       setAppState({
         isInitialized: true,
         hasError: true,
@@ -129,35 +169,113 @@ const App: React.FC = () => {
     )
   }
 
+  // Authentication required
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key="user-login"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <UserLogin />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    )
+  }
+
   // Main application
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
-        <Suspense
-          fallback={
-            <div className="min-h-screen flex items-center justify-center">
-              <LoadingSpinner size="lg" />
-            </div>
-          }
-        >
-          <Routes>
-            <Route path="/" element={<Navigate to="/app/dashboard" replace />} />
-            
-            {/* Student Routes */}
-            <Route path="/app/dashboard" element={<StudentDashboard />} />
-            <Route path="/app/lesson/:lessonId" element={<LessonViewer lessonId={window.location.pathname.split('/').pop() || ''} />} />
-            
-            {/* Teacher Routes - TODO: Create TeacherDashboard component */}
-            <Route path="/teacher/*" element={<Navigate to="/app/dashboard" replace />} />
-            
-            {/* Admin Routes - TODO: Create AdminDashboard component */}
-            <Route path="/admin/*" element={<Navigate to="/app/dashboard" replace />} />
-            
-            {/* Fallback */}
-            <Route path="*" element={<Navigate to="/app/dashboard" replace />} />
-          </Routes>
-        </Suspense>
-      </div>
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            <LoadingSpinner size="lg" />
+          </div>
+        }
+      >
+        <Routes>
+           <Route path="/" element={<Navigate to="/app/dashboard" replace />} />
+           
+           {/* Student Routes */}
+           <Route 
+             path="/app/dashboard" 
+             element={
+               <MainLayout>
+                 <StudentDashboard />
+               </MainLayout>
+             } 
+           />
+           
+           {/* Lessons Routes */}
+           <Route 
+             path="/app/lessons" 
+             element={
+               <MainLayout>
+                 <LessonCatalog />
+               </MainLayout>
+             } 
+           />
+           
+           {/* Teacher Routes */}
+           <Route 
+             path="/app/teacher/dashboard" 
+             element={
+               <MainLayout>
+                 <TeacherDashboard />
+               </MainLayout>
+             } 
+           />
+           
+           {/* Admin Routes */}
+           <Route 
+             path="/app/admin/dashboard" 
+             element={
+               <MainLayout>
+                 <AdminDashboard />
+               </MainLayout>
+             } 
+           />
+           <Route 
+             path="/app/lesson/:lessonId" 
+             element={
+               <MainLayout showBackButton={true}>
+                 <LessonViewerWrapper />
+               </MainLayout>
+             } 
+           />
+           
+           {/* User Profile & Settings Routes */}
+           <Route 
+             path="/app/profile" 
+             element={
+               <MainLayout showBackButton={true}>
+                 <UserProfile />
+               </MainLayout>
+             } 
+           />
+           <Route 
+             path="/app/settings" 
+             element={
+               <MainLayout showBackButton={true}>
+                 <UserSettings />
+               </MainLayout>
+             } 
+           />
+           
+           {/* Teacher Routes - TODO: Create TeacherDashboard component */}
+           <Route path="/teacher/*" element={<Navigate to="/app/dashboard" replace />} />
+           
+           {/* Admin Routes - TODO: Create AdminDashboard component */}
+           <Route path="/admin/*" element={<Navigate to="/app/dashboard" replace />} />
+           
+           {/* Fallback */}
+           <Route path="*" element={<Navigate to="/app/dashboard" replace />} />
+         </Routes>
+      </Suspense>
     </Router>
   )
 }

@@ -11,11 +11,15 @@ import {
   Crown,
   Zap,
   ArrowRight,
-  RefreshCw
+  RefreshCw,
+  Clock,
+  AlertTriangle,
+  Info
 } from 'lucide-react'
 import { useLicenseStore } from '../../store/licenseStore'
 import { formatLicenseType, getDaysUntilExpiry } from '../../store/licenseStore'
 import { LoadingSpinner } from '../common/LoadingSpinner'
+import ServiceTestButton from '../common/ServiceTestButton'
 
 interface LicenseActivationProps {
   onActivated?: () => void
@@ -27,19 +31,30 @@ const LicenseActivation: React.FC<LicenseActivationProps> = ({ onActivated }) =>
     licenseInfo,
     isLoading,
     error,
+    retryCount,
+    validationHistory,
     activateLicense,
     checkLicense,
-    clearError
+    clearError,
+    retryValidation,
+    getLicenseUsage
   } = useLicenseStore()
   
   const [licenseKey, setLicenseKey] = useState('')
   const [showDemo, setShowDemo] = useState(false)
   const [validationErrors, setValidationErrors] = useState<string[]>([])
+  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [licenseUsage, setLicenseUsage] = useState<{ used: number; limit: number } | null>(null)
   
   useEffect(() => {
     // Check existing license on mount
     checkLicense()
-  }, [])
+    
+    // Load license usage if valid
+    if (isLicenseValid) {
+      getLicenseUsage().then(setLicenseUsage)
+    }
+  }, [isLicenseValid])
   
   useEffect(() => {
     // Clear errors when license key changes
@@ -61,13 +76,22 @@ const LicenseActivation: React.FC<LicenseActivationProps> = ({ onActivated }) =>
       errors.push('License key must be at least 10 characters long')
     }
     
+    if (key.length > 50) {
+      errors.push('License key is too long (maximum 50 characters)')
+    }
+    
     if (!/^[A-Z0-9-]+$/.test(key.toUpperCase())) {
       errors.push('License key can only contain letters, numbers, and hyphens')
     }
     
+    // Check for common patterns
+    if (key.includes('XXXX') || key.includes('____')) {
+      errors.push('Please enter a valid license key (not a placeholder)')
+    }
+    
     return errors
   }
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -82,7 +106,7 @@ const LicenseActivation: React.FC<LicenseActivationProps> = ({ onActivated }) =>
       onActivated()
     }
   }
-  
+
   const handleDemoLicense = async () => {
     const success = await activateLicense('TRIAL-2024-DEMO')
     if (success && onActivated) {
@@ -90,6 +114,30 @@ const LicenseActivation: React.FC<LicenseActivationProps> = ({ onActivated }) =>
     }
   }
   
+  const handleRetry = async () => {
+    await retryValidation()
+  }
+  
+  const formatValidationHistory = () => {
+    return validationHistory.slice(-3).map((entry, index) => (
+      <div key={index} className="flex items-center space-x-2 text-xs">
+        {entry.success ? (
+          <CheckCircle className="w-3 h-3 text-green-500" />
+        ) : (
+          <AlertCircle className="w-3 h-3 text-red-500" />
+        )}
+        <span className="text-gray-600 dark:text-gray-400">
+          {new Date(entry.timestamp).toLocaleTimeString()}
+        </span>
+        {entry.error && (
+          <span className="text-red-600 dark:text-red-400 truncate">
+            {entry.error}
+          </span>
+        )}
+      </div>
+    ))
+  }
+
   const getLicenseIcon = (type: string) => {
     switch (type) {
       case 'trial': return <Zap className="w-6 h-6 text-yellow-500" />
@@ -150,8 +198,8 @@ const LicenseActivation: React.FC<LicenseActivationProps> = ({ onActivated }) =>
                     {formatLicenseType(licenseInfo.type)} License
                   </span>
                 </div>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  {getDaysUntilExpiry(licenseInfo)} days left
+                <span className="text-sm text-gray-500 dark:text-gray-400 font-mono">
+                  {licenseInfo.key}
                 </span>
               </div>
               
@@ -159,13 +207,19 @@ const LicenseActivation: React.FC<LicenseActivationProps> = ({ onActivated }) =>
                 <div className="flex items-center space-x-2">
                   <Users className="w-4 h-4" />
                   <span>
-                    {licenseInfo.maxUsers === -1 ? 'Unlimited' : licenseInfo.maxUsers} users
+                    {licenseUsage ? `${licenseUsage.used}/${licenseUsage.limit === -1 ? '∞' : licenseUsage.limit}` : 'Loading...'} users
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Calendar className="w-4 h-4" />
-                  <span>Expires {new Date(licenseInfo.expiresAt).toLocaleDateString()}</span>
+                  <span>{getDaysUntilExpiry(licenseInfo)} days left</span>
                 </div>
+                {licenseInfo.activatedAt && (
+                  <div className="flex items-center space-x-2">
+                    <Clock className="w-4 h-4" />
+                    <span>Activated: {new Date(licenseInfo.activatedAt).toLocaleDateString()}</span>
+                  </div>
+                )}
                 {licenseInfo.organizationName && (
                   <div className="flex items-center space-x-2">
                     <Shield className="w-4 h-4" />
@@ -233,10 +287,29 @@ const LicenseActivation: React.FC<LicenseActivationProps> = ({ onActivated }) =>
               )}
               
               {error && (
-                <p className="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center space-x-1">
-                  <AlertCircle className="w-4 h-4" />
-                  <span>{error}</span>
-                </p>
+                <div className="mt-2 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg">
+                  <div className="flex items-start space-x-2">
+                    <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                      {retryCount > 0 && retryCount < 3 && (
+                        <button
+                          onClick={handleRetry}
+                          disabled={isLoading}
+                          className="mt-2 text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 underline disabled:opacity-50"
+                        >
+                          Retry ({retryCount}/3 attempts)
+                        </button>
+                      )}
+                      {retryCount >= 3 && (
+                        <div className="mt-2 text-xs text-red-600 dark:text-red-400">
+                          <AlertTriangle className="w-3 h-3 inline mr-1" />
+                          Maximum retry attempts reached
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
             
@@ -262,11 +335,40 @@ const LicenseActivation: React.FC<LicenseActivationProps> = ({ onActivated }) =>
               <button
                 type="button"
                 onClick={() => setShowDemo(true)}
-                className="text-blue-600 dark:text-blue-400 hover:underline text-sm"
+                className="text-blue-600 dark:text-blue-400 hover:underline text-sm mr-4"
               >
                 Try demo licenses
               </button>
+              <button
+                type="button"
+                onClick={() => setShowAdvanced(!showAdvanced)}
+                className="text-gray-600 dark:text-gray-400 hover:underline text-sm"
+              >
+                {showAdvanced ? 'Hide' : 'Show'} advanced info
+              </button>
             </div>
+            
+            {showAdvanced && (
+              <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg space-y-4">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2 flex items-center">
+                    <Info className="w-4 h-4 mr-1" />
+                    Validation History
+                  </h4>
+                  {validationHistory.length > 0 ? (
+                    <div className="space-y-1">
+                      {formatValidationHistory()}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-gray-500 dark:text-gray-400">No validation history</p>
+                  )}
+                </div>
+                
+                <div className="border-t border-gray-200 dark:border-gray-600 pt-3">
+                  <ServiceTestButton />
+                </div>
+              </div>
+            )}
           </form>
         ) : (
           <div className="space-y-6">

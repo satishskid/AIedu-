@@ -1,0 +1,131 @@
+{
+  "id": "computational-thinking-ai-ethics",
+  "title": "Computational Thinking and AI Ethics",
+  "description": "Middle School - Computational thinking and AI ethics",
+  "estimatedTime": 45,
+  "difficulty": "intermediate",
+  "category": "Ethics & Logic",
+  "curriculum": ["Computational Thinking", "AI Ethics", "Problem Solving", "Critical Thinking"],
+  "content": {
+    "sections": [
+      {
+        "title": "What is Computational Thinking?",
+        "content": "Computational thinking is a problem-solving process that includes decomposition, pattern recognition, abstraction, and algorithms. It's how we break down complex problems into smaller, manageable parts - just like how you might solve a big puzzle by working on smaller sections first!"
+      },
+      {
+        "title": "The Four Pillars of Computational Thinking",
+        "content": "Let's explore the four main components that make computational thinking so powerful for solving problems."
+      },
+      {
+        "title": "1. Decomposition - Breaking Things Down",
+        "content": "Decomposition means breaking a big problem into smaller, easier-to-solve pieces. Think of it like taking apart a sandwich to see all its ingredients!",
+        "examples": [
+          {
+            "title": "Planning a School Event",
+            "content": "Big Problem: Organize a school science fair\nSmaller Parts:\n- Choose a date and location\n- Invite participants\n- Set up displays\n- Arrange judges\n- Plan refreshments\n- Create awards"
+          },
+          {
+            "title": "Creating a Game",
+            "content": "Big Problem: Make a fun computer game\nSmaller Parts:\n- Design characters\n- Create game rules\n- Build levels\n- Add sound effects\n- Test for bugs\n- Share with friends"
+          }
+        ]
+      },
+      {
+        "title": "2. Pattern Recognition - Finding Similarities",
+        "content": "Pattern recognition helps us find similarities and trends in data or problems. Once we spot patterns, we can predict what might happen next!",
+        "examples": [
+          {
+            "title": "Weather Patterns",
+            "content": "If we notice that it usually rains after cloudy days, we can predict when to bring an umbrella. AI weather systems use this same idea with much more data!"
+          },
+          {
+            "title": "Learning Patterns",
+            "content": "Students often make similar mistakes in math. Teachers can recognize these patterns and create better lessons to help everyone learn."
+          }
+        ]
+      },
+      {
+        "title": "3. Abstraction - Focusing on What Matters",
+        "content": "Abstraction means focusing on the most important details and ignoring the less important ones. It's like drawing a simple map that shows only the streets you need, not every single tree!",
+        "examples": [
+          {
+            "title": "Subway Map",
+            "content": "A subway map doesn't show every building or street - just the train lines and stations you need to get around. This abstraction makes it much easier to use!"
+          },
+          {
+            "title": "Recipe Instructions",
+            "content": "A recipe tells you the essential steps and ingredients, but doesn't describe every tiny detail like exactly how to hold the spoon. The important parts are abstracted for you."
+          }
+        ]
+      },
+      {
+        "title": "4. Algorithms - Step-by-Step Solutions",
+        "content": "An algorithm is a set of step-by-step instructions to solve a problem. It's like a recipe for computers (or people) to follow!",
+        "examples": [
+          {
+            "title": "Making a Peanut Butter Sandwich",
+            "content": "Algorithm:\n1. Get two slices of bread\n2. Open peanut butter jar\n3. Spread peanut butter on one slice\n4. Open jelly jar\n5. Spread jelly on other slice\n6. Put slices together\n7. Enjoy your sandwich!"
+          },
+          {
+            "title": "Finding the Tallest Student",
+            "content": "Algorithm:\n1. Line up all students\n2. Start with the first student as 'tallest'\n3. Compare with next student\n4. If next student is taller, they become 'tallest'\n5. Repeat until you've checked everyone\n6. Announce the tallest student"
+          }
+        ]
+      },
+      {
+        "title": "Ethics in AI - Doing the Right Thing",
+        "content": "As we create AI systems, we must consider their impact on people and society. This includes thinking about fairness, privacy, and responsibility. Just like we have rules for how to treat each other, we need rules for how AI should work!",
+        "examples": [
+          {
+            "title": "Fair AI Example",
+            "content": "An AI system that helps teachers grade assignments should treat all students fairly, regardless of their background or previous performance. It should focus only on the quality of the work."
+          },
+          {
+            "title": "Privacy Protection",
+            "content": "AI systems that use personal information (like photos or messages) should always ask permission first and keep that information safe from people who shouldn't see it."
+          },
+          {
+            "title": "Helpful, Not Harmful",
+            "content": "AI should be designed to help people, not replace them or make their lives harder. For example, AI tutors should help students learn better, not do their homework for them."
+          }
+        ]
+      },
+      {
+        "title": "Problem-Solving in Action",
+        "content": "Let's put it all together! When solving problems with computational thinking: 1) Break it down (decomposition), 2) Find patterns, 3) Focus on important details (abstraction), 4) Create step-by-step solutions (algorithms).",
+        "examples": [
+          {
+            "title": "Organizing Your Backpack",
+            "content": "Problem: Your backpack is always messy\nDecomposition: Separate by subject, supplies, personal items\nPattern Recognition: Notice which items you use most often\nAbstraction: Focus on easy access, not perfect organization\nAlgorithm: 1) Empty backpack, 2) Group similar items, 3) Put frequently used items in easy spots, 4) Pack everything back neatly"
+          }
+        ]
+      },
+      {
+        "title": "Why This Matters for AI",
+        "content": "Computational thinking is the foundation of how AI works. Every AI system uses these same principles to solve problems, recognize patterns, and make decisions. By learning these skills, you're learning to think like an AI engineer!"
+      }
+    ]
+  },
+  "prerequisites": ["Basic understanding of technology", "Critical thinking skills"],
+  "learningObjectives": [
+    "Understand the four pillars of computational thinking",
+    "Apply computational thinking to real-world problems",
+    "Recognize ethical issues in AI development",
+    "Evaluate AI systems for bias and fairness",
+    "Understand the importance of privacy in AI"
+  ],
+  "resources": [
+    {
+      "id": "computational-thinking-guide",
+      "title": "Computational Thinking Guide",
+      "url": "https://www.bbc.co.uk/bitesize/guides/zp92mp3/revision/1",
+      "description": "Comprehensive guide to computational thinking concepts"
+    },
+    {
+      "id": "ai-ethics-framework",
+      "title": "AI Ethics Framework",
+      "url": "https://www.partnershiponai.org/about/",
+      "description": "Framework for evaluating ethical considerations in AI"
+    }
+  ]
+}

@@ -6,9 +6,6 @@ import { AI_MODELS } from './aiModels'
 // Constants
 const HUGGINGFACE_API_URL = 'https://api-inference.huggingface.co/models'
 const HUGGINGFACE_API_KEY = import.meta.env.VITE_HUGGINGFACE_API_KEY
-const MOCK_AI = import.meta.env.VITE_MOCK_AI === 'true'
-
-
 
 // Available AI Models (re-exported for backward compatibility)
 export const AI_MODELS_COMPAT = {
@@ -259,141 +256,75 @@ class AIService {
     
     return this.queueRequest(async () => {
       try {
-        // Use real AI if API key is available, otherwise fallback to mock
-        if (HUGGINGFACE_API_KEY && !import.meta.env.VITE_MOCK_AI) {
+        // Use real AI if API key is available
+        if (HUGGINGFACE_API_KEY) {
           return await this.getRealTutorResponse(request)
         } else {
-          const mockResponse = this.getMockTutorResponse(request)
-          
-          // Store conversation
-          this.updateConversation(request.context.sessionId, {
-            id: 'user-' + Date.now(),
-            role: 'user',
-            content: request.message,
-            timestamp: new Date().toISOString()
-          })
-          
-          this.updateConversation(request.context.sessionId, mockResponse.message)
-          
-          return mockResponse
+          throw new Error('HuggingFace API key not configured. Please set VITE_HUGGINGFACE_API_KEY in your environment.')
         }
         
       } catch (error) {
         console.error('AI Tutor error:', error)
-        
-        // Fallback to mock response in development
-        if (import.meta.env.DEV) {
-          return this.getMockTutorResponse(request)
-        }
-        
         throw error
       }
     })
   }
-  
-  // Review code with AI
+
   async reviewCode(request: AICodeReviewRequest): Promise<AICodeReviewResponse> {
-    if (!licenseService.hasFeature('ai_code_review')) {
-      throw new Error('AI Code Review feature not available in your license')
-    }
-    
     return this.queueRequest(async () => {
       try {
-        // Use real AI if API key is available, otherwise fallback to mock
-        if (HUGGINGFACE_API_KEY && !import.meta.env.VITE_MOCK_AI) {
+        if (HUGGINGFACE_API_KEY) {
           return await this.getRealCodeReviewResponse(request)
         } else {
-          return this.getMockCodeReviewResponse(request)
+          throw new Error('HuggingFace API key not configured. Please set VITE_HUGGINGFACE_API_KEY in your environment.')
         }
-        
       } catch (error) {
         console.error('AI Code Review error:', error)
-        
-        if (import.meta.env.DEV) {
-          return this.getMockCodeReviewResponse(request)
-        }
-        
         throw error
       }
     })
   }
-  
-  // Get hints from AI
+
   async getHint(request: AIHintRequest): Promise<AIHintResponse> {
-    if (!licenseService.hasFeature('ai_hints')) {
-      throw new Error('AI Hints feature not available in your license')
-    }
-    
     return this.queueRequest(async () => {
       try {
-        // Use real AI if API key is available, otherwise fallback to mock
-        if (HUGGINGFACE_API_KEY && !import.meta.env.VITE_MOCK_AI) {
+        if (HUGGINGFACE_API_KEY) {
           return await this.getRealHintResponse(request)
         } else {
-          return this.getMockHintResponse(request)
+          throw new Error('HuggingFace API key not configured. Please set VITE_HUGGINGFACE_API_KEY in your environment.')
         }
-        
       } catch (error) {
         console.error('AI Hint error:', error)
-        
-        if (import.meta.env.DEV) {
-          return this.getMockHintResponse(request)
-        }
-        
         throw error
       }
     })
   }
-  
-  // Get explanations from AI
+
   async getExplanation(request: AIExplanationRequest): Promise<AIExplanationResponse> {
-    if (!licenseService.hasFeature('ai_explanations')) {
-      throw new Error('AI Explanations feature not available in your license')
-    }
-    
     return this.queueRequest(async () => {
       try {
-        // Use real AI if API key is available, otherwise fallback to mock
-        if (HUGGINGFACE_API_KEY && !import.meta.env.VITE_MOCK_AI) {
+        if (HUGGINGFACE_API_KEY) {
           return await this.getRealExplanationResponse(request)
         } else {
-          return this.getMockExplanationResponse(request)
+          throw new Error('HuggingFace API key not configured. Please set VITE_HUGGINGFACE_API_KEY in your environment.')
         }
-        
       } catch (error) {
         console.error('AI Explanation error:', error)
-        
-        if (import.meta.env.DEV) {
-          return this.getMockExplanationResponse(request)
-        }
-        
         throw error
       }
     })
   }
-  
-  // Get feedback from AI
+
   async getFeedback(request: AIFeedbackRequest): Promise<AIFeedbackResponse> {
-    if (!licenseService.hasFeature('ai_feedback')) {
-      throw new Error('AI Feedback feature not available in your license')
-    }
-    
     return this.queueRequest(async () => {
       try {
-        // Use real AI if API key is available, otherwise fallback to mock
-        if (HUGGINGFACE_API_KEY && !import.meta.env.VITE_MOCK_AI) {
+        if (HUGGINGFACE_API_KEY) {
           return await this.getRealFeedbackResponse(request)
         } else {
-          return this.getMockFeedbackResponse(request)
+          throw new Error('HuggingFace API key not configured. Please set VITE_HUGGINGFACE_API_KEY in your environment.')
         }
-        
       } catch (error) {
         console.error('AI Feedback error:', error)
-        
-        if (import.meta.env.DEV) {
-          return this.getMockFeedbackResponse(request)
-        }
-        
         throw error
       }
     })
@@ -798,138 +729,8 @@ Provide encouraging feedback with specific suggestions for improvement.`
     this.isProcessingQueue = false
   }
   
-  // Mock responses for development
-  private getMockTutorResponse(request: AITutorRequest): AITutorResponse {
-    return {
-      message: {
-        id: 'mock-' + Date.now(),
-        role: 'assistant',
-        content: `I understand you're asking about: "${request.message}". Let me help you with that! This is a mock response for development.`,
-        timestamp: new Date().toISOString(),
-        metadata: {
-          type: 'text',
-          confidence: 0.9,
-          tokens: 50,
-          model: 'mock-gpt-4'
-        }
-      },
-      suggestions: [
-        {
-          id: 'suggestion-1',
-          type: 'hint',
-          title: 'Consider this approach',
-          description: 'Try breaking down the problem into smaller steps.',
-          priority: 'medium'
-        }
-      ],
-      codeSnippets: [],
-      resources: [],
-      followUpQuestions: [
-        'Would you like me to explain this concept further?',
-        'Do you have any specific questions about the implementation?'
-      ],
-      confidence: 0.9,
-      tokensUsed: 50
-    }
-  }
-  
-  private getMockCodeReviewResponse(request: AICodeReviewRequest): AICodeReviewResponse {
-    return {
-      overall: {
-        score: 85,
-        summary: 'Your code looks good overall with room for minor improvements.',
-        recommendations: [
-          'Consider adding more comments for clarity',
-          'Some variable names could be more descriptive'
-        ]
-      },
-      issues: [
-        {
-          id: 'issue-1',
-          type: 'style',
-          severity: 'low',
-          title: 'Variable naming',
-          description: 'Consider using more descriptive variable names',
-          line: 5,
-          suggestion: 'Use camelCase for variable names'
-        }
-      ],
-      suggestions: [
-        {
-          id: 'suggestion-1',
-          type: 'improvement',
-          title: 'Add error handling',
-          description: 'Consider adding try-catch blocks for better error handling',
-          priority: 'medium'
-        }
-      ],
-      improvements: [],
-      tokensUsed: 100
-    }
-  }
-  
-  private getMockHintResponse(request: AIHintRequest): AIHintResponse {
-    const hints = [
-      'Think about the basic structure first',
-      'Consider what data types you need',
-      'Break the problem into smaller functions'
-    ]
-    
-    return {
-      hint: hints[request.hintLevel - 1] || hints[0],
-      explanation: 'This hint should help you move forward with your solution.',
-      nextSteps: ['Try implementing the basic structure', 'Test with simple examples'],
-      relatedConcepts: ['functions', 'variables', 'control flow'],
-      confidence: 0.8
-    }
-  }
-  
-  private getMockExplanationResponse(request: AIExplanationRequest): AIExplanationResponse {
-    return {
-      explanation: `${request.concept} is an important programming concept. Here's a detailed explanation...`,
-      examples: [
-        {
-          id: 'example-1',
-          title: `Basic ${request.concept} example`,
-          description: 'A simple example to illustrate the concept',
-          code: '// Example code here',
-          language: request.context?.language || 'javascript',
-          tags: [request.concept],
-          difficulty: request.context?.level || 'beginner'
-        }
-      ],
-      keyPoints: [
-        `${request.concept} is used for...`,
-        'Key benefits include...',
-        'Common use cases are...'
-      ],
-      relatedTopics: ['related-topic-1', 'related-topic-2']
-    }
-  }
-  
-  private getMockFeedbackResponse(request: AIFeedbackRequest): AIFeedbackResponse {
-    return {
-      feedback: 'Your code shows good understanding of the concepts. Here are some observations...',
-      score: 78,
-      strengths: [
-        'Good use of proper syntax',
-        'Code is well-structured'
-      ],
-      improvements: [
-        'Consider adding more comments',
-        'Some edge cases could be handled better'
-      ],
-      hints: [
-        'Try testing with different input values',
-        'Consider what happens with empty inputs'
-      ],
-      nextSteps: [
-        'Practice with similar problems',
-        'Review the related concepts'
-      ],
-      encouragement: 'Great work! Keep practicing and you\'ll continue to improve.'
-    }
-  }
+  // All AI responses now use real HuggingFace integration
+  // Mock responses have been removed to ensure production-ready AI functionality
 }
 
 // Create and export AI service instance

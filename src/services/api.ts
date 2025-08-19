@@ -2,9 +2,17 @@ import { toast } from 'react-hot-toast'
 // import { QueryClient } from '@tanstack/react-query' // TODO: Add when react-query is installed
 type QueryClient = any // Temporary type until react-query is added
 
+// Define RequestInit type for fetch API
+interface RequestInit {
+  method?: string
+  headers?: Record<string, string> | Headers
+  body?: string | FormData | Blob | null
+  signal?: AbortSignal
+}
+
 // API Configuration
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/.netlify/functions'
-const API_VERSION = 'v1'
+// const API_VERSION = 'v1' // Reserved for future use
 const API_TIMEOUT = 30000 // 30 seconds
 
 // API Endpoints
@@ -119,7 +127,7 @@ export interface ApiResponse<T = any> {
   }
 }
 
-export interface ApiError {
+export interface IApiError {
   message: string
   status: number
   code?: string
@@ -492,45 +500,7 @@ export const getErrorMessage = (error: any): string => {
   return 'An unexpected error occurred'
 }
 
-// Mock mode for development
-if (import.meta.env.VITE_MOCK_API === 'true') {
-  console.warn('API is running in mock mode')
-  
-  // Override API client methods with mock responses
-  const originalGet = apiClient.get.bind(apiClient)
-  const originalPost = apiClient.post.bind(apiClient)
-  const originalPut = apiClient.put.bind(apiClient)
-  const originalPatch = apiClient.patch.bind(apiClient)
-  const originalDelete = apiClient.delete.bind(apiClient)
-  
-  // Mock delay
-  const mockDelay = (ms: number = 500) => new Promise(resolve => setTimeout(resolve, ms))
-  
-  // Mock responses
-  const mockResponses: Record<string, any> = {
-    '/auth/login': { success: true, data: { token: 'mock-token', user: { id: '1', name: 'Mock User', email: 'mock@example.com' } } },
-    '/auth/profile': { success: true, data: { id: '1', name: 'Mock User', email: 'mock@example.com' } },
-    '/license/validate': { success: true, data: { valid: true, type: 'premium', expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) } },
-    '/system/health': { success: true, data: { status: 'healthy', timestamp: new Date().toISOString() } }
-  }
-  
-  apiClient.get = async function<T>(endpoint: string, config?: any): Promise<ApiResponse<T>> {
-    await mockDelay()
-    const mockResponse = mockResponses[endpoint]
-    if (mockResponse) {
-      return mockResponse
-    }
-    return originalGet(endpoint, config)
-  }
-  
-  apiClient.post = async function<T>(endpoint: string, data?: any, config?: any): Promise<ApiResponse<T>> {
-    await mockDelay()
-    const mockResponse = mockResponses[endpoint]
-    if (mockResponse) {
-      return mockResponse
-    }
-    return originalPost(endpoint, data, config)
-  }
-}
+// API client is now configured to use real Netlify Functions
+// All endpoints will route to /.netlify/functions/* as configured in netlify.toml
 
 export default apiClient

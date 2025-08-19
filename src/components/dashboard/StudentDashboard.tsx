@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   BookOpen,
   Trophy,
@@ -22,6 +23,9 @@ import {
 import { useAuthStore } from '../../store/authStore'
 import { useLicenseStore } from '../../store/licenseStore'
 import { LoadingSpinner } from '../common/LoadingSpinner'
+import { useAnalytics } from '../../hooks/useAnalytics'
+import { useUserManagement } from '../../hooks/useUserManagement'
+import { useProgressTracking } from '../../hooks/useProgressTracking'
 
 interface LessonProgress {
   id: string
@@ -54,8 +58,14 @@ interface StudyStreak {
 const StudentDashboard: React.FC = () => {
   const { user } = useAuthStore()
   const licenseStore = useLicenseStore()
+  const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'overview' | 'lessons' | 'achievements'>('overview')
+  
+  // Initialize service hooks
+  const analytics = useAnalytics()
+  const userManagement = useUserManagement()
+  const progressTracking = useProgressTracking()
   
   // Mock data - in real app, this would come from API
   const [studentData, setStudentData] = useState({
@@ -79,6 +89,10 @@ const StudentDashboard: React.FC = () => {
   })
   
   useEffect(() => {
+    // Track dashboard visit
+    analytics.trackPageView('student_dashboard', 'Student Dashboard')
+    analytics.trackEngagement('session_start', { feature: 'student_dashboard' })
+    
     // Simulate loading data
     const loadData = async () => {
       setIsLoading(true)
@@ -410,7 +424,19 @@ const StudentDashboard: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    <button className="ml-4 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                    <button 
+                      onClick={() => {
+                        // Track lesson click
+                        analytics.trackLearning('lesson_start', {
+                          lessonId: lesson.id,
+                          subject: lesson.category,
+                          difficulty: lesson.difficulty
+                        })
+                        navigate(`/app/lesson/${lesson.id}`)
+                      }}
+                      className="ml-4 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      title={lesson.completed ? 'Review lesson' : 'Start lesson'}
+                    >
                       {lesson.completed ? (
                         <CheckCircle className="w-5 h-5 text-green-500" />
                       ) : (

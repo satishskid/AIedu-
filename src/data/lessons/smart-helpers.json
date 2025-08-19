@@ -1,0 +1,77 @@
+{
+  "id": "smart-helpers",
+  "title": "Smart Helpers Around Us",
+  "description": "Discover AI helpers in everyday life",
+  "estimatedTime": 25,
+  "difficulty": "beginner",
+  "category": "AI Basics",
+  "curriculum": ["AI", "Technology", "Everyday Life"],
+  "content": {
+    "sections": [
+      {
+        "title": "What are Smart Helpers?",
+        "content": "Smart helpers are AI-powered tools that make our daily tasks easier. They can understand what we say, help us find information, and even control devices in our homes. Think of them as invisible friends that are always ready to help!"
+      },
+      {
+        "title": "Examples of Smart Helpers",
+        "content": "Voice assistants like Siri and Alexa, recommendation systems on Netflix and YouTube, and navigation apps like Google Maps are all examples of smart helpers we use every day.",
+        "examples": [
+          {
+            "title": "Voice Assistant Example",
+            "content": "When you say 'Hey Siri, what's the weather today?', the AI processes your speech, understands your question, and provides a helpful response."
+          },
+          {
+            "title": "Smart Recommendations",
+            "content": "When Netflix suggests a movie you might like, it's using AI to analyze what you've watched before and find similar content."
+          }
+        ]
+      },
+      {
+        "title": "How Smart Helpers Learn",
+        "content": "Smart helpers learn from data and user interactions. The more they're used, the better they become at understanding and helping users. It's like how you get better at a game the more you practice!",
+        "examples": [
+          {
+            "title": "Learning from Examples",
+            "content": "Just like how you learn to recognize different dog breeds by seeing many pictures, AI helpers learn by looking at lots of examples and finding patterns."
+          },
+          {
+            "title": "Getting Better Over Time",
+            "content": "When you use a smart helper and it gets something right or wrong, it remembers this and tries to do better next time. It's like having a friend who always wants to help you better!"
+          }
+        ]
+      },
+      {
+        "title": "Smart Helpers at Home",
+        "content": "Many homes now have smart devices that can turn lights on and off, play music, or even order groceries. These devices use AI to understand what we want and help make our lives easier.",
+        "examples": [
+          {
+            "title": "Smart Thermostat",
+            "content": "A smart thermostat learns when you're home and away, and automatically adjusts the temperature to save energy while keeping you comfortable."
+          }
+        ]
+      },
+      {
+        "title": "Smart Helpers at School",
+        "content": "AI helpers are also used in education! They can help students learn at their own pace, provide instant feedback on assignments, and even help teachers create personalized learning experiences."
+      },
+      {
+        "title": "The Future of Smart Helpers",
+        "content": "As technology advances, smart helpers will become even more helpful. They might help us solve complex problems, create art, or even help protect our environment. The possibilities are endless!"
+      }
+    ]
+  },
+  "prerequisites": ["Basic understanding of technology"],
+  "learningObjectives": [
+    "Identify smart helpers in daily life",
+    "Understand how AI assistants work",
+    "Recognize the benefits of AI helpers"
+  ],
+  "resources": [
+    {
+      "id": "ai-basics",
+      "title": "Introduction to AI",
+      "url": "https://www.edx.org/learn/artificial-intelligence/massachusetts-institute-of-technology-introduction-to-machine-learning",
+      "description": "Learn the fundamentals of artificial intelligence"
+    }
+  ]
+}

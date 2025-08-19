@@ -6,7 +6,108 @@
   "category": "fundamentals",
   "estimatedTime": 30,
   "content": {
-    "introduction": "Variables are containers for storing data values. In programming, we use different data types to represent different kinds of information.",
-    "example": "let name = \"Alice\";\nlet age = 25;\nlet isStudent = true;"
+    "sections": [
+      {
+        "title": "What are Variables?",
+        "content": "Variables are like labeled boxes where we can store different types of information. Just like you might have a box labeled 'toys' to store your toys, programmers use variables to store data with meaningful names."
+      },
+      {
+        "title": "Creating Variables",
+        "content": "In most programming languages, we create variables by giving them a name and a value. Think of it like putting a label on a container and then putting something inside it.",
+        "examples": [
+          {
+            "language": "javascript",
+            "title": "Creating Your First Variables",
+            "content": "let name = \"Alice\";\nlet age = 25;\nlet isStudent = true;\n\nconsole.log(name);     // Prints: Alice\nconsole.log(age);      // Prints: 25\nconsole.log(isStudent); // Prints: true"
+          },
+          {
+            "language": "python",
+            "title": "Variables in Python",
+            "content": "name = \"Alice\"\nage = 25\nis_student = True\n\nprint(name)       # Prints: Alice\nprint(age)        # Prints: 25\nprint(is_student) # Prints: True"
+          }
+        ]
+      },
+      {
+        "title": "Data Types - Different Kinds of Information",
+        "content": "Just like in real life we have different types of things (numbers, words, true/false), programming languages have different data types to represent different kinds of information."
+      },
+      {
+        "title": "1. Numbers (Integers and Decimals)",
+        "content": "Numbers are used for counting, calculating, and measuring. We have whole numbers (integers) and decimal numbers (floats).",
+        "examples": [
+          {
+            "language": "javascript",
+            "title": "Working with Numbers",
+            "content": "let wholeNumber = 42;        // Integer\nlet decimalNumber = 3.14;    // Float/Decimal\nlet negativeNumber = -10;    // Negative number\n\n// Math operations\nlet sum = wholeNumber + decimalNumber;\nlet product = wholeNumber * 2;\n\nconsole.log(sum);      // Prints: 45.14\nconsole.log(product);  // Prints: 84"
+          }
+        ]
+      },
+      {
+        "title": "2. Text (Strings)",
+        "content": "Strings are used to store text - like names, messages, or any sequence of characters. We put text in quotes to tell the computer it's a string.",
+        "examples": [
+          {
+            "language": "javascript",
+            "title": "Working with Text",
+            "content": "let firstName = \"Alice\";\nlet lastName = \"Johnson\";\nlet greeting = \"Hello, world!\";\n\n// Combining strings\nlet fullName = firstName + \" \" + lastName;\nlet personalGreeting = \"Hi, \" + firstName + \"!\";\n\nconsole.log(fullName);         // Prints: Alice Johnson\nconsole.log(personalGreeting); // Prints: Hi, Alice!"
+          }
+        ]
+      },
+      {
+        "title": "3. True/False (Booleans)",
+        "content": "Booleans represent yes/no or true/false values. They're perfect for storing information about whether something is on or off, completed or not, etc.",
+        "examples": [
+          {
+            "language": "javascript",
+            "title": "Using Booleans",
+            "content": "let isLoggedIn = true;\nlet hasFinishedHomework = false;\nlet isWeekend = true;\n\n// Booleans in action\nif (isLoggedIn) {\n    console.log(\"Welcome back!\");\n}\n\nif (hasFinishedHomework) {\n    console.log(\"Great job!\");\n} else {\n    console.log(\"Time to do homework!\");\n}"
+          }
+        ]
+      },
+      {
+        "title": "4. Lists (Arrays)",
+        "content": "Arrays let us store multiple values in a single variable. Think of it like a shopping list where you can store many items under one name.",
+        "examples": [
+          {
+            "language": "javascript",
+            "title": "Creating and Using Arrays",
+            "content": "let fruits = [\"apple\", \"banana\", \"orange\"];\nlet numbers = [1, 2, 3, 4, 5];\nlet mixedArray = [\"Alice\", 25, true];\n\n// Accessing array items\nconsole.log(fruits[0]);    // Prints: apple\nconsole.log(numbers[2]);   // Prints: 3\n\n// Adding items\nfruits.push(\"grape\");\nconsole.log(fruits);       // Prints: [\"apple\", \"banana\", \"orange\", \"grape\"]"
+          }
+        ]
+      },
+      {
+        "title": "Variable Naming Rules",
+        "content": "Good variable names make your code easier to read and understand. Here are some important rules and tips for naming variables.",
+        "examples": [
+          {
+            "language": "javascript",
+            "title": "Good vs Bad Variable Names",
+            "content": "// Good variable names (descriptive and clear)\nlet studentName = \"Alice\";\nlet testScore = 95;\nlet isHomeworkComplete = true;\nlet shoppingList = [\"milk\", \"bread\", \"eggs\"];\n\n// Bad variable names (unclear and confusing)\nlet x = \"Alice\";        // What does x represent?\nlet num = 95;           // What kind of number?\nlet flag = true;        // What is this flag for?\nlet arr = [\"milk\"];     // What kind of array?"
+          }
+        ]
+      },
+      {
+        "title": "Changing Variable Values",
+        "content": "Variables are called 'variables' because their values can change! We can update them as our program runs.",
+        "examples": [
+          {
+            "language": "javascript",
+            "title": "Updating Variables",
+            "content": "let score = 0;\nconsole.log(\"Starting score:\", score);  // Prints: 0\n\n// Player gets points\nscore = score + 10;\nconsole.log(\"After bonus:\", score);     // Prints: 10\n\n// Player gets more points\nscore += 5;  // Shorthand for score = score + 5\nconsole.log(\"Final score:\", score);     // Prints: 15\n\n// Update text variables too\nlet message = \"Hello\";\nmessage = message + \", World!\";\nconsole.log(message);                   // Prints: Hello, World!"
+          }
+        ]
+      },
+      {
+        "title": "Why Data Types Matter",
+        "content": "Understanding data types helps you choose the right tool for the job and avoid common mistakes. Each type has special abilities and limitations.",
+        "examples": [
+          {
+            "language": "javascript",
+            "title": "Data Type Surprises",
+            "content": "// Numbers vs Strings - they behave differently!\nlet numberA = 5;\nlet numberB = 3;\nlet stringA = \"5\";\nlet stringB = \"3\";\n\nconsole.log(numberA + numberB);  // Prints: 8 (math addition)\nconsole.log(stringA + stringB);  // Prints: \"53\" (text combination)\n\n// Converting between types\nlet textNumber = \"42\";\nlet realNumber = Number(textNumber);\nconsole.log(realNumber + 8);     // Prints: 50"
+          }
+        ]
+      }
+    ]
   }
 }

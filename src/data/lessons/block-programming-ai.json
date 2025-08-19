@@ -1,0 +1,100 @@
+{
+  "id": "block-programming-ai",
+  "title": "Block Programming with AI",
+  "description": "Late Elementary - Block programming and AI applications",
+  "estimatedTime": 35,
+  "difficulty": "beginner",
+  "category": "Programming",
+  "curriculum": ["Block Programming", "AI", "Scratch", "Logic"],
+  "content": {
+    "sections": [
+      {
+        "title": "Introduction to Block Programming",
+        "content": "Block programming uses visual blocks instead of text to create programs. It's like building with digital LEGO blocks where each block represents a command or instruction. This makes programming accessible and fun for everyone!"
+      },
+      {
+        "title": "Why Use Blocks?",
+        "content": "Block programming helps us learn programming concepts without worrying about spelling or syntax errors. We can focus on the logic and creativity of programming while the blocks handle the technical details."
+      },
+      {
+        "title": "Basic Programming Concepts",
+        "content": "Before we create AI programs, let's understand the basic building blocks: sequences (doing things in order), loops (repeating actions), and conditions (making decisions).",
+        "examples": [
+          {
+            "language": "scratch",
+            "title": "Simple Sequence",
+            "content": "when green flag clicked\nmove 10 steps\nturn 15 degrees\nsay [Hello!] for 2 seconds"
+          }
+        ]
+      },
+      {
+        "title": "Creating Your First AI Program",
+        "content": "Let's create a simple AI program that can recognize and respond to different inputs using block programming. This is the foundation of how AI systems work!",
+        "examples": [
+          {
+            "language": "scratch",
+            "title": "Simple AI Chatbot",
+            "content": "when green flag clicked\nforever\n  ask [What's your favorite color?] and wait\n  if <answer = [blue]> then\n    say [Blue is a cool color!] for 2 seconds\n  else\n    say [That's a nice color choice!] for 2 seconds\n  end"
+          },
+          {
+            "language": "scratch",
+            "title": "Weather AI Assistant",
+            "content": "when green flag clicked\nask [How is the weather today?] and wait\nif <answer contains [sunny]?> then\n  say [Great! Perfect day for outdoor activities!] for 3 seconds\nelse\n  if <answer contains [rainy]?> then\n    say [Don't forget your umbrella!] for 3 seconds\n  else\n    say [Thanks for sharing!] for 2 seconds\n  end\nend"
+          }
+        ]
+      },
+      {
+        "title": "AI Decision Making",
+        "content": "AI programs make decisions based on rules and patterns. In block programming, we use conditional blocks (if-then-else) to create these decision-making processes. This is how AI 'thinks'!",
+        "examples": [
+          {
+            "language": "scratch",
+            "title": "Smart Pet AI",
+            "content": "when this sprite clicked\nif <touching [mouse-pointer v]?> then\n  say [I'm happy to see you!] for 2 seconds\n  change [happiness v] by 10\nelse\n  say [Come closer to play!] for 2 seconds\nend"
+          },
+          {
+            "language": "scratch",
+            "title": "Learning AI Game",
+            "content": "when green flag clicked\nset [score v] to 0\nforever\n  ask [What's 5 + 3?] and wait\n  if <answer = [8]> then\n    say [Correct! You're getting smarter!] for 2 seconds\n    change [score v] by 1\n  else\n    say [Try again! Think step by step.] for 2 seconds\n  end\nend"
+          }
+        ]
+      },
+      {
+        "title": "Pattern Recognition with Blocks",
+        "content": "One of the most important AI concepts is pattern recognition. We can teach our block programs to recognize patterns and respond accordingly.",
+        "examples": [
+          {
+            "language": "scratch",
+            "title": "Pattern Detective",
+            "content": "when green flag clicked\nask [Enter a sequence like: red, blue, red, blue, ?] and wait\nif <answer contains [red]?> then\n  say [I think the pattern continues with red!] for 3 seconds\nelse\n  say [Let me think about this pattern...] for 2 seconds\nend"
+          }
+        ]
+      },
+      {
+        "title": "Building Smarter Programs",
+        "content": "As we combine different blocks and concepts, our programs become smarter and more helpful. This is the essence of artificial intelligence - creating programs that can learn, adapt, and help solve problems."
+      }
+    ]
+  },
+  "prerequisites": ["Basic computer skills", "Understanding of cause and effect"],
+  "learningObjectives": [
+    "Understand block programming concepts",
+    "Create simple AI behaviors using blocks",
+    "Learn basic programming logic",
+    "Build interactive AI programs"
+  ],
+  "resources": [
+    {
+      "id": "scratch-basics",
+      "title": "Scratch Programming Guide",
+      "url": "https://scratch.mit.edu/ideas",
+      "description": "Official Scratch programming tutorials and ideas"
+    },
+    {
+      "id": "ai-for-kids",
+      "title": "AI for Kids",
+      "url": "https://www.khanacademy.org/computing/intro-to-programming/programming-intro/intro-to-programming/v/programming-intro",
+      "description": "Child-friendly introduction to artificial intelligence"
+    }
+  ]
+}

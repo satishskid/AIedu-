@@ -67,6 +67,8 @@ interface AITutorProps {
   exerciseId?: string
   studentLevel?: 'beginner' | 'intermediate' | 'advanced'
   subject?: string
+  lessonData?: any // Current lesson content and metadata
+  currentSection?: string // Current section being viewed
   onHelpRequest?: (topic: string) => void
   onCodeAssistance?: (code: string) => void
   className?: string
@@ -95,6 +97,8 @@ export const AITutor: React.FC<AITutorProps> = ({
   exerciseId,
   studentLevel = 'beginner',
   subject = 'programming',
+  lessonData,
+  currentSection,
   onHelpRequest,
   onCodeAssistance,
   className = '',
@@ -232,35 +236,48 @@ export const AITutor: React.FC<AITutorProps> = ({
     }
   }
 
-  // Generate AI response using enhanced AI service
+  // Generate AI response using enhanced AI service with lesson context
   const generateAIResponse = async (userInput: string): Promise<Message> => {
     try {
-      // Build AI context
+      // Build comprehensive AI context with lesson data
       const aiContext: AIContext = {
         userId: user?.id || 'anonymous',
         sessionId: Date.now().toString(),
         lessonId,
         codeContext: {
-          language: 'javascript', // Default, could be dynamic
+          language: lessonData?.programmingLanguage || 'javascript',
           code: '', // Could include current code context
         },
         userProfile: {
           level: studentLevel,
-          preferences: [],
-          learningGoals: []
+          preferences: lessonData?.tags || [],
+          learningGoals: lessonData?.learningObjectives || []
         }
+      }
+
+      // Create contextual prompt based on lesson content
+      let contextualMessage = userInput
+      if (lessonData) {
+        const lessonContext = `\n\nCurrent Lesson Context:\n- Title: ${lessonData.title}\n- Category: ${lessonData.category}\n- Grade Level: ${lessonData.grade}\n- Current Section: ${currentSection || 'General'}\n- Learning Objectives: ${lessonData.learningObjectives?.join(', ') || 'N/A'}`
+        contextualMessage = userInput + lessonContext
       }
 
       // Make request to enhanced AI service
       const aiResponse = await enhancedAIService.generateTutorResponse({
-        message: userInput,
+        message: contextualMessage,
         context: aiContext,
         options: {
-          includeCodeSuggestions: true,
+          includeCodeSuggestions: lessonData?.curriculum?.includes('Programming') || lessonData?.curriculum?.includes('Python'),
           includeExplanations: true,
-          includeExamples: true
+          includeExamples: true,
+          maxTokens: 512,
+          temperature: 0.7
         }
       })
+
+      // Generate lesson-specific suggestions
+      const lessonSpecificSuggestions = generateLessonSuggestions(lessonData, currentSection)
+      const combinedSuggestions = [...(aiResponse.suggestions?.map(s => s.title) || []), ...lessonSpecificSuggestions]
 
       // Convert AI response to Message format
       return {
@@ -269,18 +286,69 @@ export const AITutor: React.FC<AITutorProps> = ({
         content: aiResponse.message.content,
         timestamp: new Date(),
         codeSnippet: aiResponse.codeSnippets?.[0]?.code,
-        suggestions: aiResponse.suggestions?.map(s => s.title),
+        suggestions: combinedSuggestions.slice(0, 4), // Limit to 4 suggestions
         relatedTopics: aiResponse.resources?.map(r => r.title)
       }
     } catch (error) {
       console.error('AI response generation failed:', error)
-      // Fallback to simple response
-      return {
-        id: Date.now().toString(),
-        type: 'ai',
-        content: "I'm here to help! Could you please rephrase your question or try again?",
-        timestamp: new Date()
-      }
+      // Fallback to contextual response based on lesson data
+      return generateFallbackResponse(userInput, lessonData, currentSection)
+    }
+  }
+
+  // Generate lesson-specific suggestions
+  const generateLessonSuggestions = (lessonData: any, currentSection?: string): string[] => {
+    if (!lessonData) return []
+    
+    const suggestions: string[] = []
+    
+    // Add suggestions based on lesson content
+    if (lessonData.title?.toLowerCase().includes('smart helper')) {
+      suggestions.push('What are some examples of smart helpers?', 'How do smart helpers learn?')
+    }
+    
+    if (lessonData.curriculum?.includes('Computational Thinking')) {
+      suggestions.push('Explain computational thinking', 'Show me an example of decomposition')
+    }
+    
+    if (lessonData.curriculum?.includes('Python') || lessonData.curriculum?.includes('Programming')) {
+      suggestions.push('Help me with this code', 'Show me a coding example')
+    }
+    
+    if (lessonData.curriculum?.includes('Ethics')) {
+      suggestions.push('Why is AI ethics important?', 'Give me an ethics example')
+    }
+    
+    // Add section-specific suggestions
+    if (currentSection) {
+      suggestions.push(`Explain more about ${currentSection}`, `Give me practice for ${currentSection}`)
+    }
+    
+    return suggestions.slice(0, 3) // Limit to 3 lesson-specific suggestions
+  }
+
+  // Generate fallback response with lesson context
+  const generateFallbackResponse = (userInput: string, lessonData: any, currentSection?: string): Message => {
+    let content = "I'm here to help you with this lesson! "
+    
+    if (lessonData?.title) {
+      content += `We're currently working on "${lessonData.title}". `
+    }
+    
+    if (currentSection) {
+      content += `You're in the ${currentSection} section. `
+    }
+    
+    content += "Could you please rephrase your question or ask about a specific concept from this lesson?"
+    
+    const suggestions = generateLessonSuggestions(lessonData, currentSection)
+    
+    return {
+      id: Date.now().toString(),
+      type: 'ai',
+      content,
+      timestamp: new Date(),
+      suggestions: suggestions.length > 0 ? suggestions : ['Explain this concept', 'Give me an example', 'Help me understand']
     }
   }
 

@@ -9,6 +9,10 @@ interface LicenseInfo {
   features: string[]
   organizationName?: string
   contactEmail?: string
+  activatedAt?: string
+  deviceId?: string
+  usageCount?: number
+  maxActivations?: number
 }
 
 interface LicenseState {
@@ -18,6 +22,12 @@ interface LicenseState {
   isLoading: boolean
   error: string | null
   lastChecked: string | null
+  retryCount: number
+  validationHistory: Array<{
+    timestamp: string
+    success: boolean
+    error?: string
+  }>
   
   // Actions
   checkLicense: () => Promise<void>
@@ -25,6 +35,8 @@ interface LicenseState {
   deactivateLicense: () => void
   refreshLicense: () => Promise<void>
   clearError: () => void
+  retryValidation: () => Promise<void>
+  getLicenseUsage: () => Promise<{ used: number; limit: number }>
 }
 
 // Mock license validation (replace with actual API call)
@@ -107,6 +119,8 @@ export const useLicenseStore = create<LicenseState>()(
       isLoading: false,
       error: null,
       lastChecked: null,
+      retryCount: 0,
+      validationHistory: [],
       
       // Check current license status
       checkLicense: async () => {
@@ -125,12 +139,17 @@ export const useLicenseStore = create<LicenseState>()(
           const isValid = isLicenseStillValid(licenseInfo)
           
           if (!isValid) {
+            const errorMsg = 'License has expired'
             set({
               isLicenseValid: false,
               licenseInfo: null,
-              error: 'License has expired',
+              error: errorMsg,
               isLoading: false,
-              lastChecked: new Date().toISOString()
+              lastChecked: new Date().toISOString(),
+              validationHistory: [
+                ...state.validationHistory.slice(-9),
+                { timestamp: new Date().toISOString(), success: false, error: errorMsg }
+              ]
             })
             return
           }
@@ -143,22 +162,34 @@ export const useLicenseStore = create<LicenseState>()(
           set({
             isLicenseValid: true,
             isLoading: false,
-            lastChecked: new Date().toISOString()
+            lastChecked: new Date().toISOString(),
+            retryCount: 0,
+            validationHistory: [
+              ...state.validationHistory.slice(-9),
+              { timestamp: new Date().toISOString(), success: true }
+            ]
           })
         } catch (error) {
           console.error('License validation failed:', error)
+          const errorMsg = error instanceof Error ? error.message : 'License validation failed'
           set({
             isLicenseValid: false,
             licenseInfo: null,
-            error: error instanceof Error ? error.message : 'License validation failed',
+            error: errorMsg,
             isLoading: false,
-            lastChecked: new Date().toISOString()
+            lastChecked: new Date().toISOString(),
+            retryCount: state.retryCount + 1,
+            validationHistory: [
+              ...state.validationHistory.slice(-9),
+              { timestamp: new Date().toISOString(), success: false, error: errorMsg }
+            ]
           })
         }
       },
       
       // Activate a new license
       activateLicense: async (licenseKey: string) => {
+        const state = get()
         set({ isLoading: true, error: null })
         
         try {
@@ -168,23 +199,42 @@ export const useLicenseStore = create<LicenseState>()(
             throw new Error('Invalid license key')
           }
           
+          // Add activation metadata
+          const enhancedLicenseInfo = {
+            ...licenseInfo,
+            activatedAt: new Date().toISOString(),
+            deviceId: navigator.userAgent ? btoa(navigator.userAgent).slice(0, 16) : 'unknown',
+            usageCount: 1
+          }
+          
           set({
             isLicenseValid: true,
-            licenseInfo,
+            licenseInfo: enhancedLicenseInfo,
             isLoading: false,
             error: null,
-            lastChecked: new Date().toISOString()
+            lastChecked: new Date().toISOString(),
+            retryCount: 0,
+            validationHistory: [
+              ...state.validationHistory.slice(-9),
+              { timestamp: new Date().toISOString(), success: true }
+            ]
           })
           
           return true
         } catch (error) {
           console.error('License activation failed:', error)
+          const errorMsg = error instanceof Error ? error.message : 'License activation failed'
           set({
             isLicenseValid: false,
             licenseInfo: null,
-            error: error instanceof Error ? error.message : 'License activation failed',
+            error: errorMsg,
             isLoading: false,
-            lastChecked: new Date().toISOString()
+            lastChecked: new Date().toISOString(),
+            retryCount: state.retryCount + 1,
+            validationHistory: [
+              ...state.validationHistory.slice(-9),
+              { timestamp: new Date().toISOString(), success: false, error: errorMsg }
+            ]
           })
           
           return false
@@ -197,7 +247,9 @@ export const useLicenseStore = create<LicenseState>()(
           isLicenseValid: false,
           licenseInfo: null,
           error: null,
-          lastChecked: new Date().toISOString()
+          lastChecked: new Date().toISOString(),
+          retryCount: 0,
+          validationHistory: []
         })
       },
       
@@ -210,6 +262,41 @@ export const useLicenseStore = create<LicenseState>()(
       // Clear error state
       clearError: () => {
         set({ error: null })
+      },
+      
+      // Retry validation with exponential backoff
+      retryValidation: async () => {
+        const state = get()
+        const { retryCount } = state
+        
+        if (retryCount >= 3) {
+          set({ error: 'Maximum retry attempts reached. Please check your connection and try again later.' })
+          return
+        }
+        
+        // Exponential backoff: 1s, 2s, 4s
+        const delay = Math.pow(2, retryCount) * 1000
+        await new Promise(resolve => setTimeout(resolve, delay))
+        
+        await state.checkLicense()
+      },
+      
+      // Get license usage information
+      getLicenseUsage: async () => {
+        const state = get()
+        const { licenseInfo } = state
+        
+        if (!licenseInfo) {
+          return { used: 0, limit: 0 }
+        }
+        
+        // Mock usage data - in production, this would come from API
+        const mockUsage = {
+          used: licenseInfo.usageCount || 1,
+          limit: licenseInfo.maxUsers
+        }
+        
+        return mockUsage
       }
     }),
     {
@@ -217,7 +304,8 @@ export const useLicenseStore = create<LicenseState>()(
       partialize: (state: LicenseState) => ({
         licenseInfo: state.licenseInfo,
         isLicenseValid: state.isLicenseValid,
-        lastChecked: state.lastChecked
+        lastChecked: state.lastChecked,
+        validationHistory: state.validationHistory
       })
     }
   )

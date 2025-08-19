@@ -32,15 +32,28 @@ interface AuthState {
   isLoading: boolean
   error: string | null
   sessionToken: string | null
+  sessionExpiry: number | null
+  lastActivity: number | null
+  loginAttempts: number
+  isLocked: boolean
+  lockUntil: number | null
   
   // Actions
-  login: (email: string, password: string) => Promise<boolean>
+  login: (email: string, password: string, rememberMe?: boolean) => Promise<boolean>
   logout: () => void
   register: (userData: RegisterData) => Promise<boolean>
   updateUser: (updates: Partial<User>) => Promise<boolean>
   refreshToken: () => Promise<boolean>
   clearError: () => void
   checkAuthStatus: () => Promise<void>
+  updateActivity: () => void
+  checkSessionExpiry: () => boolean
+  extendSession: () => void
+  resetLoginAttempts: () => void
+  incrementLoginAttempts: () => void
+  lockAccount: (duration?: number) => void
+  unlockAccount: () => void
+  isAccountLocked: () => boolean
 }
 
 interface RegisterData {
@@ -228,9 +241,22 @@ export const useAuthStore = create<AuthState>()(
       isLoading: false,
       error: null,
       sessionToken: null,
+      sessionExpiry: null,
+      lastActivity: null,
+      loginAttempts: 0,
+      isLocked: false,
+      lockUntil: null,
       
       // Login user
-      login: async (email: string, password: string) => {
+      login: async (email: string, password: string, rememberMe: boolean = false) => {
+        const state = get()
+        
+        // Check if account is locked
+        if (state.isAccountLocked()) {
+          set({ error: 'Account is temporarily locked due to too many failed attempts' })
+          return false
+        }
+        
         set({ isLoading: true, error: null })
         
         try {
@@ -240,10 +266,19 @@ export const useAuthStore = create<AuthState>()(
             throw new Error('Authentication failed')
           }
           
+          // Calculate session expiry (24 hours for remember me, 8 hours otherwise)
+          const sessionDuration = rememberMe ? 24 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000
+          const sessionExpiry = Date.now() + sessionDuration
+          
           set({
             user: result.user,
             isAuthenticated: true,
             sessionToken: result.token,
+            sessionExpiry,
+            lastActivity: Date.now(),
+            loginAttempts: 0,
+            isLocked: false,
+            lockUntil: null,
             isLoading: false,
             error: null
           })
@@ -251,10 +286,19 @@ export const useAuthStore = create<AuthState>()(
           return true
         } catch (error) {
           console.error('Login failed:', error)
+          
+          // Increment login attempts
+          const newAttempts = state.loginAttempts + 1
+          const shouldLock = newAttempts >= 5
+          
           set({
             user: null,
             isAuthenticated: false,
             sessionToken: null,
+            sessionExpiry: null,
+            loginAttempts: newAttempts,
+            isLocked: shouldLock,
+            lockUntil: shouldLock ? Date.now() + 15 * 60 * 1000 : null, // 15 minutes
             error: error instanceof Error ? error.message : 'Login failed',
             isLoading: false
           })
@@ -269,6 +313,8 @@ export const useAuthStore = create<AuthState>()(
           user: null,
           isAuthenticated: false,
           sessionToken: null,
+          sessionExpiry: null,
+          lastActivity: null,
           error: null
         })
       },
@@ -280,10 +326,18 @@ export const useAuthStore = create<AuthState>()(
         try {
           const result = await registerUser(userData)
           
+          // Set default session duration (8 hours)
+          const sessionExpiry = Date.now() + 8 * 60 * 60 * 1000
+          
           set({
             user: result.user,
             isAuthenticated: true,
             sessionToken: result.token,
+            sessionExpiry,
+            lastActivity: Date.now(),
+            loginAttempts: 0,
+            isLocked: false,
+            lockUntil: null,
             isLoading: false,
             error: null
           })
@@ -295,6 +349,7 @@ export const useAuthStore = create<AuthState>()(
             user: null,
             isAuthenticated: false,
             sessionToken: null,
+            sessionExpiry: null,
             error: error instanceof Error ? error.message : 'Registration failed',
             isLoading: false
           })
@@ -418,9 +473,111 @@ export const useAuthStore = create<AuthState>()(
         }
       },
       
-      // Clear error state
+      // Clear error
       clearError: () => {
         set({ error: null })
+      },
+
+      // Update user activity timestamp
+      updateActivity: () => {
+        const state = get()
+        if (state.isAuthenticated) {
+          set({ lastActivity: Date.now() })
+        }
+      },
+
+      // Check if session has expired
+      checkSessionExpiry: () => {
+        const state = get()
+        if (!state.sessionExpiry || !state.isAuthenticated) {
+          return false
+        }
+        
+        const isExpired = Date.now() > state.sessionExpiry
+        if (isExpired) {
+          // Auto logout if session expired
+          set({
+            user: null,
+            isAuthenticated: false,
+            sessionToken: null,
+            sessionExpiry: null,
+            lastActivity: null,
+            error: 'Session expired. Please log in again.'
+          })
+        }
+        
+        return isExpired
+      },
+
+      // Extend current session
+      extendSession: () => {
+        const state = get()
+        if (state.isAuthenticated && state.sessionExpiry) {
+          const newExpiry = Date.now() + 8 * 60 * 60 * 1000 // 8 hours
+          set({ 
+            sessionExpiry: newExpiry,
+            lastActivity: Date.now()
+          })
+        }
+      },
+
+      // Reset login attempts
+      resetLoginAttempts: () => {
+        set({ 
+          loginAttempts: 0,
+          isLocked: false,
+          lockUntil: null
+        })
+      },
+
+      // Increment login attempts
+      incrementLoginAttempts: () => {
+        const state = get()
+        const newAttempts = state.loginAttempts + 1
+        const shouldLock = newAttempts >= 5
+        
+        set({
+          loginAttempts: newAttempts,
+          isLocked: shouldLock,
+          lockUntil: shouldLock ? Date.now() + 15 * 60 * 1000 : null // 15 minutes
+        })
+      },
+
+      // Lock account for specified duration
+      lockAccount: (duration: number = 15 * 60 * 1000) => {
+        set({
+          isLocked: true,
+          lockUntil: Date.now() + duration
+        })
+      },
+
+      // Unlock account
+      unlockAccount: () => {
+        set({
+          isLocked: false,
+          lockUntil: null,
+          loginAttempts: 0
+        })
+      },
+
+      // Check if account is currently locked
+      isAccountLocked: () => {
+        const state = get()
+        if (!state.isLocked || !state.lockUntil) {
+          return false
+        }
+        
+        const isStillLocked = Date.now() < state.lockUntil
+        if (!isStillLocked) {
+          // Auto unlock if lock period has passed
+          set({
+            isLocked: false,
+            lockUntil: null,
+            loginAttempts: 0
+          })
+        }
+        
+        return isStillLocked
       }
     }),
     {
@@ -428,7 +585,12 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state: AuthState) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
-        sessionToken: state.sessionToken
+        sessionToken: state.sessionToken,
+        sessionExpiry: state.sessionExpiry,
+        lastActivity: state.lastActivity,
+        loginAttempts: state.loginAttempts,
+        isLocked: state.isLocked,
+        lockUntil: state.lockUntil
       })
     }
   )

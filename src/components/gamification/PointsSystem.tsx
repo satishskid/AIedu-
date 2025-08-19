@@ -36,6 +36,8 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { useLicenseStore } from '../../store/licenseStore'
+import { pointsRepository } from '../../database/repositories/pointsRepository'
+import type { PointsTransaction as DBPointsTransaction, PointsReward as DBPointsReward, UserPointsStats } from '../../database/models'
 
 interface PointsTransaction {
   id: string
@@ -122,256 +124,159 @@ export const PointsSystem: React.FC<PointsSystemProps> = ({
   const initializePointsSystem = useCallback(async () => {
     setLoading(true)
     
-    // Mock data - in real app, this would come from API
-    const mockLevels: PointsLevel[] = [
-      { level: 1, name: 'Novice', minPoints: 0, maxPoints: 99, rewards: ['Basic Avatar'], badge: '🌱', color: 'text-green-600' },
-      { level: 2, name: 'Learner', minPoints: 100, maxPoints: 249, rewards: ['Custom Theme'], badge: '📚', color: 'text-blue-600' },
-      { level: 3, name: 'Explorer', minPoints: 250, maxPoints: 499, rewards: ['Extra Hints'], badge: '🔍', color: 'text-purple-600' },
-      { level: 4, name: 'Scholar', minPoints: 500, maxPoints: 999, rewards: ['Priority Support'], badge: '🎓', color: 'text-indigo-600' },
-      { level: 5, name: 'Expert', minPoints: 1000, maxPoints: 1999, rewards: ['Advanced Features'], badge: '⭐', color: 'text-yellow-600' },
-      { level: 6, name: 'Master', minPoints: 2000, maxPoints: 4999, rewards: ['Mentor Badge'], badge: '👑', color: 'text-orange-600' },
-      { level: 7, name: 'Legend', minPoints: 5000, maxPoints: Infinity, rewards: ['Hall of Fame'], badge: '🏆', color: 'text-red-600' }
-    ]
-    
-    const mockTransactions: PointsTransaction[] = [
-      {
-        id: '1',
-        type: 'earned',
-        amount: 50,
-        reason: 'Completed JavaScript Basics lesson',
-        category: 'lesson',
-        timestamp: new Date(Date.now() - 1000 * 60 * 30),
-        metadata: { lessonId: 'js-basics-1' }
-      },
-      {
-        id: '2',
-        type: 'earned',
-        amount: 25,
-        reason: 'Perfect score on Arrays quiz',
-        category: 'quiz',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
-        metadata: { quizId: 'arrays-quiz', score: 100 }
-      },
-      {
-        id: '3',
-        type: 'bonus',
-        amount: 100,
-        reason: '7-day learning streak bonus',
-        category: 'streak',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
-        metadata: { streakDays: 7 }
-      },
-      {
-        id: '4',
-        type: 'spent',
-        amount: -30,
-        reason: 'Purchased hint for coding exercise',
-        category: 'exercise',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
-        metadata: { exerciseId: 'loops-challenge' }
-      },
-      {
-        id: '5',
-        type: 'earned',
-        amount: 75,
-        reason: 'Achievement unlocked: First 100 Points',
-        category: 'achievement',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
-        metadata: { achievementId: 'first-100' }
+    try {
+      const currentUserId = userId || user?.id
+      if (!currentUserId) {
+        setLoading(false)
+        return
       }
-    ]
-    
-    const mockRewards: PointsReward[] = [
-      {
-        id: '1',
-        name: 'Dark Theme',
-        description: 'Unlock the sleek dark theme for your learning environment',
-        cost: 100,
-        type: 'cosmetic',
-        icon: '🌙',
-        available: true,
-        owned: false,
-        category: 'Themes',
-        rarity: 'common'
-      },
-      {
-        id: '2',
-        name: 'Extra Hint',
-        description: 'Get an additional hint for any coding exercise',
-        cost: 50,
-        type: 'functional',
-        icon: '💡',
-        available: true,
-        owned: false,
-        category: 'Learning Aids',
-        rarity: 'common'
-      },
-      {
-        id: '3',
-        name: 'Premium Avatar',
-        description: 'Unlock exclusive avatar customization options',
-        cost: 200,
-        type: 'cosmetic',
-        icon: '👤',
-        available: true,
-        owned: false,
-        category: 'Avatars',
-        rarity: 'rare'
-      },
-      {
-        id: '4',
-        name: 'Skip Exercise',
-        description: 'Skip one difficult exercise and still get partial credit',
-        cost: 150,
-        type: 'functional',
-        icon: '⏭️',
-        available: true,
-        owned: false,
-        category: 'Learning Aids',
-        rarity: 'rare'
-      },
-      {
-        id: '5',
-        name: 'Bonus Lesson',
-        description: 'Unlock exclusive advanced content',
-        cost: 500,
-        type: 'content',
-        icon: '📖',
-        available: licenseInfo?.type === 'premium',
-        owned: false,
-        category: 'Content',
-        rarity: 'epic'
-      },
-      {
-        id: '6',
-        name: 'Mentor Badge',
-        description: 'Show off your expertise with a special mentor badge',
-        cost: 1000,
-        type: 'social',
-        icon: '🏅',
-        available: true,
-        owned: false,
-        category: 'Badges',
-        rarity: 'legendary'
+
+      // Initialize default rewards if needed
+      await pointsRepository.initializeDefaultRewards()
+      
+      // Define levels (could be moved to database later)
+      const systemLevels: PointsLevel[] = [
+        { level: 1, name: 'Novice', minPoints: 0, maxPoints: 99, rewards: ['Basic Avatar'], badge: '🌱', color: 'text-green-600' },
+        { level: 2, name: 'Learner', minPoints: 100, maxPoints: 249, rewards: ['Custom Theme'], badge: '📚', color: 'text-blue-600' },
+        { level: 3, name: 'Explorer', minPoints: 250, maxPoints: 499, rewards: ['Extra Hints'], badge: '🔍', color: 'text-purple-600' },
+        { level: 4, name: 'Scholar', minPoints: 500, maxPoints: 999, rewards: ['Priority Support'], badge: '🎓', color: 'text-indigo-600' },
+        { level: 5, name: 'Expert', minPoints: 1000, maxPoints: 1999, rewards: ['Advanced Features'], badge: '⭐', color: 'text-yellow-600' },
+        { level: 6, name: 'Master', minPoints: 2000, maxPoints: 4999, rewards: ['Mentor Badge'], badge: '👑', color: 'text-orange-600' },
+        { level: 7, name: 'Legend', minPoints: 5000, maxPoints: Infinity, rewards: ['Hall of Fame'], badge: '🏆', color: 'text-red-600' }
+      ]
+      
+      // Load real data from database
+      const [dbTransactions, dbRewards, userRewards] = await Promise.all([
+        pointsRepository.getTransactionsByUser(currentUserId),
+        pointsRepository.getAvailableRewards(),
+        pointsRepository.getUserRewards(currentUserId)
+      ])
+      
+      // Convert database transactions to component format
+      const userTransactions: PointsTransaction[] = dbTransactions.map(t => ({
+        id: t.id,
+        type: t.type as 'earned' | 'spent' | 'bonus' | 'penalty',
+        amount: t.amount,
+        reason: t.reason,
+        category: t.category,
+        timestamp: new Date(t.createdAt),
+        metadata: t.metadata
+      }))
+      
+      // Convert database rewards to component format
+      const ownedRewardIds = new Set(userRewards.map(ur => ur.rewardId))
+      const userRewards_formatted: PointsReward[] = dbRewards.map(r => ({
+        id: r.id,
+        name: r.name,
+        description: r.description,
+        cost: r.cost,
+        type: r.type,
+        icon: r.icon,
+        available: r.available,
+        owned: ownedRewardIds.has(r.id),
+        category: r.category,
+        rarity: r.rarity
+      }))
+      
+      // Calculate current stats
+      const totalEarned = userTransactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0)
+      const totalSpent = Math.abs(userTransactions.filter(t => t.amount < 0).reduce((sum, t) => sum + t.amount, 0))
+      const currentBalance = totalEarned - totalSpent
+      
+      // Calculate time-based earnings
+      const now = new Date()
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      const weekStart = new Date(todayStart.getTime() - (todayStart.getDay() * 24 * 60 * 60 * 1000))
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+      
+      const todayEarned = userTransactions
+        .filter(t => t.timestamp >= todayStart && t.amount > 0)
+        .reduce((sum, t) => sum + t.amount, 0)
+      
+      const weeklyEarned = userTransactions
+        .filter(t => t.timestamp >= weekStart && t.amount > 0)
+        .reduce((sum, t) => sum + t.amount, 0)
+      
+      const monthlyEarned = userTransactions
+        .filter(t => t.timestamp >= monthStart && t.amount > 0)
+        .reduce((sum, t) => sum + t.amount, 0)
+      
+      // Calculate streaks (simplified)
+      const currentStreak = 5 // Mock value - would need proper streak calculation
+      const longestStreak = 12 // Mock value - would need proper streak calculation
+      
+      // Determine current level
+      const currentLevel = systemLevels.find(level => 
+        currentBalance >= level.minPoints && currentBalance <= level.maxPoints
+      ) || systemLevels[0]
+      
+      const nextLevel = systemLevels.find(level => level.level === currentLevel.level + 1) || null
+      const progressToNext = nextLevel 
+        ? ((currentBalance - currentLevel.minPoints) / (nextLevel.minPoints - currentLevel.minPoints)) * 100
+        : 100
+      
+      const stats: PointsStats = {
+        totalEarned,
+        totalSpent,
+        currentBalance,
+        todayEarned,
+        weeklyEarned,
+        monthlyEarned,
+        currentStreak,
+        longestStreak,
+        level: currentLevel,
+        nextLevel,
+        progressToNext
       }
-    ]
-    
-    // Calculate current stats
-    const totalEarned = mockTransactions
-      .filter(t => t.type === 'earned' || t.type === 'bonus')
-      .reduce((sum, t) => sum + t.amount, 0)
-    
-    const totalSpent = Math.abs(mockTransactions
-      .filter(t => t.type === 'spent' || t.type === 'penalty')
-      .reduce((sum, t) => sum + t.amount, 0))
-    
-    const currentBalance = totalEarned - totalSpent
-    
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const todayEarned = mockTransactions
-      .filter(t => (t.type === 'earned' || t.type === 'bonus') && t.timestamp >= today)
-      .reduce((sum, t) => sum + t.amount, 0)
-    
-    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-    const weeklyEarned = mockTransactions
-      .filter(t => (t.type === 'earned' || t.type === 'bonus') && t.timestamp >= weekAgo)
-      .reduce((sum, t) => sum + t.amount, 0)
-    
-    const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-    const monthlyEarned = mockTransactions
-      .filter(t => (t.type === 'earned' || t.type === 'bonus') && t.timestamp >= monthAgo)
-      .reduce((sum, t) => sum + t.amount, 0)
-    
-    const currentLevel = mockLevels.find(level => 
-      currentBalance >= level.minPoints && currentBalance <= level.maxPoints
-    ) || mockLevels[0]
-    
-    const nextLevel = mockLevels.find(level => level.level === currentLevel.level + 1) || null
-    const progressToNext = nextLevel 
-      ? ((currentBalance - currentLevel.minPoints) / (nextLevel.minPoints - currentLevel.minPoints)) * 100
-      : 100
-    
-    const stats: PointsStats = {
-      totalEarned,
-      totalSpent,
-      currentBalance,
-      todayEarned,
-      weeklyEarned,
-      monthlyEarned,
-      currentStreak: 7, // Mock streak
-      longestStreak: 12, // Mock longest streak
-      level: currentLevel,
-      nextLevel,
-      progressToNext
+      
+      setLevels(systemLevels)
+      setTransactions(userTransactions)
+      setRewards(userRewards_formatted)
+      setPointsStats(stats)
+      
+    } catch (error) {
+      console.error('Failed to initialize points system:', error)
+    } finally {
+      setLoading(false)
     }
-    
-    setPointsStats(stats)
-    setTransactions(mockTransactions)
-    setRewards(mockRewards)
-    setLevels(mockLevels)
-    setLoading(false)
-  }, [user, licenseInfo])
+  }, [userId, user, licenseInfo])
 
-  // Award points (for demo purposes)
-  const awardPoints = useCallback((amount: number, reason: string, category: PointsTransaction['category']) => {
-    const newTransaction: PointsTransaction = {
-      id: Date.now().toString(),
-      type: 'earned',
-      amount,
-      reason,
-      category,
-      timestamp: new Date()
+  const awardPoints = useCallback(async (
+    amount: number,
+    reason: string,
+    category: 'lesson' | 'exercise' | 'quiz' | 'achievement' | 'streak' | 'social' | 'bonus' = 'bonus',
+    metadata?: Record<string, any>
+  ) => {
+    const currentUserId = userId || user?.id
+    if (!currentUserId) return
+    
+    try {
+      await pointsRepository.awardPoints(currentUserId, amount, reason, category, metadata)
+      await initializePointsSystem() // Refresh data
+      
+      // Animate points
+      setAnimatingPoints(amount)
+      setTimeout(() => setAnimatingPoints(null), 2000)
+    } catch (error) {
+      console.error('Failed to award points:', error)
     }
-    
-    setTransactions(prev => [newTransaction, ...prev])
-    setAnimatingPoints(amount)
-    
-    // Update stats
-    if (pointsStats) {
-      setPointsStats(prev => prev ? {
-        ...prev,
-        totalEarned: prev.totalEarned + amount,
-        currentBalance: prev.currentBalance + amount,
-        todayEarned: prev.todayEarned + amount
-      } : null)
-    }
-    
-    // Clear animation after delay
-    setTimeout(() => setAnimatingPoints(null), 2000)
-  }, [pointsStats])
+  }, [userId, user, initializePointsSystem])
 
-  // Purchase reward
-  const purchaseReward = useCallback((reward: PointsReward) => {
-    if (!pointsStats || pointsStats.currentBalance < reward.cost) return
+  const purchaseReward = useCallback(async (rewardId: string) => {
+    const currentUserId = userId || user?.id
+    if (!currentUserId) return
     
-    const newTransaction: PointsTransaction = {
-      id: Date.now().toString(),
-      type: 'spent',
-      amount: -reward.cost,
-      reason: `Purchased ${reward.name}`,
-      category: 'bonus',
-      timestamp: new Date(),
-      metadata: { rewardId: reward.id }
+    try {
+      await pointsRepository.purchaseReward(currentUserId, rewardId)
+      await initializePointsSystem() // Refresh data
+      setShowRewardModal(false)
+      setSelectedReward(null)
+    } catch (error) {
+      console.error('Failed to purchase reward:', error)
     }
-    
-    setTransactions(prev => [newTransaction, ...prev])
-    setRewards(prev => prev.map(r => 
-      r.id === reward.id ? { ...r, owned: true } : r
-    ))
-    
-    // Update stats
-    setPointsStats(prev => prev ? {
-      ...prev,
-      totalSpent: prev.totalSpent + reward.cost,
-      currentBalance: prev.currentBalance - reward.cost
-    } : null)
-    
-    setShowRewardModal(false)
-    setSelectedReward(null)
-  }, [pointsStats])
+  }, [userId, user, initializePointsSystem])
 
-  // Get transaction icon
+  // Helper functions
   const getTransactionIcon = (transaction: PointsTransaction) => {
     switch (transaction.category) {
       case 'lesson': return <BookOpen className="w-4 h-4" />
@@ -380,242 +285,160 @@ export const PointsSystem: React.FC<PointsSystemProps> = ({
       case 'achievement': return <Trophy className="w-4 h-4" />
       case 'streak': return <Flame className="w-4 h-4" />
       case 'social': return <Heart className="w-4 h-4" />
-      default: return <Star className="w-4 h-4" />
+      default: return <Coins className="w-4 h-4" />
     }
   }
 
-  // Get rarity color
-  const getRarityColor = (rarity: PointsReward['rarity']) => {
+  const getRarityColor = (rarity: string) => {
     switch (rarity) {
-      case 'common': return 'border-secondary-300 bg-secondary-50'
-      case 'rare': return 'border-blue-300 bg-blue-50'
-      case 'epic': return 'border-purple-300 bg-purple-50'
-      case 'legendary': return 'border-yellow-300 bg-yellow-50'
-      default: return 'border-secondary-300 bg-secondary-50'
+      case 'common': return 'text-gray-600 border-gray-300'
+      case 'rare': return 'text-blue-600 border-blue-300'
+      case 'epic': return 'text-purple-600 border-purple-300'
+      case 'legendary': return 'text-yellow-600 border-yellow-300'
+      default: return 'text-gray-600 border-gray-300'
     }
   }
 
-  if (loading || !pointsStats) {
+  if (loading) {
     return (
-      <div className={`flex items-center justify-center p-8 ${className}`}>
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
+      <div className={`bg-white rounded-lg shadow-sm border p-6 ${className}`}>
+        <div className="animate-pulse">
+          <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
+          <div className="h-8 bg-gray-200 rounded w-1/2 mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+        </div>
       </div>
     )
   }
 
-  if (compact) {
+  if (!pointsStats) {
     return (
-      <div className={`bg-gradient-to-r from-primary-500 to-secondary-500 text-white p-4 rounded-lg ${className}`}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="text-2xl">{pointsStats.level.badge}</div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <Coins className="w-4 h-4" />
-                <span className="font-bold text-lg">{pointsStats.currentBalance}</span>
-                {animatingPoints && (
-                  <span className="text-green-300 font-bold animate-bounce">+{animatingPoints}</span>
-                )}
-              </div>
-              <div className="text-sm opacity-90">{pointsStats.level.name}</div>
-            </div>
-          </div>
-          
-          <div className="text-right">
-            <div className="text-sm opacity-90">Today</div>
-            <div className="font-bold">+{pointsStats.todayEarned}</div>
-          </div>
+      <div className={`bg-white rounded-lg shadow-sm border p-6 ${className}`}>
+        <div className="text-center text-gray-500">
+          <Coins className="w-12 h-12 mx-auto mb-2 opacity-50" />
+          <p>No points data available</p>
         </div>
-        
-        {pointsStats.nextLevel && (
-          <div className="mt-3">
-            <div className="flex justify-between text-xs mb-1">
-              <span>Level {pointsStats.level.level}</span>
-              <span>Level {pointsStats.nextLevel.level}</span>
-            </div>
-            <div className="w-full bg-white/20 rounded-full h-2">
-              <div 
-                className="bg-white h-2 rounded-full transition-all duration-500"
-                style={{ width: `${pointsStats.progressToNext}%` }}
-              />
-            </div>
-          </div>
-        )}
       </div>
     )
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-lg ${className}`}>
+    <div className={`bg-white rounded-lg shadow-sm border ${className}`}>
       {/* Header */}
-      <div className="p-6 border-b border-secondary-200">
+      <div className="p-6 border-b">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-secondary-900 flex items-center gap-2">
-            <Coins className="w-6 h-6 text-primary-600" />
-            Points System
-          </h2>
-          
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-yellow-100 rounded-lg">
+              <Coins className="w-6 h-6 text-yellow-600" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Points System</h3>
+              <p className="text-sm text-gray-500">Track your learning progress</p>
+            </div>
+          </div>
           {animatingPoints && (
-            <div className="flex items-center space-x-2 bg-success-100 text-success-700 px-3 py-1 rounded-full animate-bounce">
-              <Plus className="w-4 h-4" />
-              <span className="font-bold">{animatingPoints}</span>
+            <div className="animate-bounce text-green-600 font-bold text-lg">
+              +{animatingPoints}
             </div>
           )}
         </div>
         
         {/* Stats Overview */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center p-3 bg-primary-50 rounded-lg">
-            <div className="text-2xl font-bold text-primary-600">{pointsStats.currentBalance}</div>
-            <div className="text-sm text-secondary-600">Current Balance</div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-yellow-600">{pointsStats.currentBalance}</div>
+            <div className="text-xs text-gray-500">Current Balance</div>
           </div>
-          
-          <div className="text-center p-3 bg-success-50 rounded-lg">
-            <div className="text-2xl font-bold text-success-600">{pointsStats.todayEarned}</div>
-            <div className="text-sm text-secondary-600">Today</div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-600">{pointsStats.totalEarned}</div>
+            <div className="text-xs text-gray-500">Total Earned</div>
           </div>
-          
-          <div className="text-center p-3 bg-warning-50 rounded-lg">
-            <div className="text-2xl font-bold text-warning-600">{pointsStats.currentStreak}</div>
-            <div className="text-sm text-secondary-600">Day Streak</div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-blue-600">{pointsStats.currentStreak}</div>
+            <div className="text-xs text-gray-500">Current Streak</div>
           </div>
-          
-          <div className="text-center p-3 bg-purple-50 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600">{pointsStats.level.level}</div>
-            <div className="text-sm text-secondary-600">Level</div>
-          </div>
-        </div>
-        
-        {/* Level Progress */}
-        <div className="mt-4 p-4 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-lg">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center space-x-2">
-              <span className="text-2xl">{pointsStats.level.badge}</span>
-              <div>
-                <div className={`font-bold ${pointsStats.level.color}`}>{pointsStats.level.name}</div>
-                <div className="text-sm text-secondary-600">Level {pointsStats.level.level}</div>
-              </div>
+          <div className="text-center">
+            <div className={`text-2xl font-bold ${pointsStats.level.color}`}>
+              {pointsStats.level.badge}
             </div>
-            
-            {pointsStats.nextLevel && (
-              <div className="text-right">
-                <div className="text-sm text-secondary-600">Next: {pointsStats.nextLevel.name}</div>
-                <div className="text-xs text-secondary-500">
-                  {pointsStats.nextLevel.minPoints - pointsStats.currentBalance} points to go
-                </div>
-              </div>
-            )}
+            <div className="text-xs text-gray-500">{pointsStats.level.name}</div>
           </div>
-          
-          {pointsStats.nextLevel && (
-            <div className="w-full bg-secondary-200 rounded-full h-3">
-              <div 
-                className="bg-gradient-to-r from-primary-500 to-secondary-500 h-3 rounded-full transition-all duration-500"
-                style={{ width: `${pointsStats.progressToNext}%` }}
-              />
-            </div>
-          )}
         </div>
       </div>
-      
-      {/* Tabs */}
-      <div className="border-b border-secondary-200">
+
+      {/* Navigation Tabs */}
+      <div className="border-b">
         <nav className="flex space-x-8 px-6">
           {[
             { id: 'overview', label: 'Overview', icon: TrendingUp },
-            { id: 'transactions', label: 'History', icon: Clock },
-            { id: 'rewards', label: 'Rewards', icon: Gift },
-            { id: 'levels', label: 'Levels', icon: Trophy }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center space-x-2 py-4 border-b-2 transition-colors ${
-                activeTab === tab.id
-                  ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-secondary-600 hover:text-secondary-900'
-              }`}
-            >
-              <tab.icon className="w-4 h-4" />
-              <span>{tab.label}</span>
-            </button>
-          ))}
+            { id: 'transactions', label: 'Transactions', icon: Clock, show: showTransactions },
+            { id: 'rewards', label: 'Rewards', icon: Gift, show: showRewards },
+            { id: 'levels', label: 'Levels', icon: Trophy, show: showLevels }
+          ].filter(tab => tab.show !== false).map(tab => {
+            const Icon = tab.icon
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 ${
+                  activeTab === tab.id
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{tab.label}</span>
+              </button>
+            )
+          })}
         </nav>
       </div>
-      
+
       {/* Tab Content */}
       <div className="p-6">
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            {/* Quick Actions */}
+            {/* Level Progress */}
             <div>
-              <h3 className="font-semibold text-secondary-900 mb-3">Quick Actions</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <button
-                  onClick={() => awardPoints(25, 'Demo lesson completed', 'lesson')}
-                  className="p-3 bg-primary-50 hover:bg-primary-100 rounded-lg text-center transition-colors"
-                >
-                  <BookOpen className="w-6 h-6 text-primary-600 mx-auto mb-1" />
-                  <div className="text-sm font-medium">Complete Lesson</div>
-                  <div className="text-xs text-secondary-600">+25 pts</div>
-                </button>
-                
-                <button
-                  onClick={() => awardPoints(50, 'Demo quiz perfect score', 'quiz')}
-                  className="p-3 bg-success-50 hover:bg-success-100 rounded-lg text-center transition-colors"
-                >
-                  <Target className="w-6 h-6 text-success-600 mx-auto mb-1" />
-                  <div className="text-sm font-medium">Ace Quiz</div>
-                  <div className="text-xs text-secondary-600">+50 pts</div>
-                </button>
-                
-                <button
-                  onClick={() => awardPoints(100, 'Demo streak bonus', 'streak')}
-                  className="p-3 bg-warning-50 hover:bg-warning-100 rounded-lg text-center transition-colors"
-                >
-                  <Flame className="w-6 h-6 text-warning-600 mx-auto mb-1" />
-                  <div className="text-sm font-medium">Streak Bonus</div>
-                  <div className="text-xs text-secondary-600">+100 pts</div>
-                </button>
-                
-                <button
-                  onClick={() => awardPoints(200, 'Demo achievement unlocked', 'achievement')}
-                  className="p-3 bg-purple-50 hover:bg-purple-100 rounded-lg text-center transition-colors"
-                >
-                  <Trophy className="w-6 h-6 text-purple-600 mx-auto mb-1" />
-                  <div className="text-sm font-medium">Achievement</div>
-                  <div className="text-xs text-secondary-600">+200 pts</div>
-                </button>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-700">
+                  Level {pointsStats.level.level}: {pointsStats.level.name}
+                </span>
+                {pointsStats.nextLevel && (
+                  <span className="text-sm text-gray-500">
+                    {pointsStats.nextLevel.minPoints - pointsStats.currentBalance} points to next level
+                  </span>
+                )}
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${Math.min(pointsStats.progressToNext, 100)}%` }}
+                ></div>
               </div>
             </div>
-            
+
             {/* Recent Activity */}
             <div>
-              <h3 className="font-semibold text-secondary-900 mb-3">Recent Activity</h3>
+              <h4 className="text-sm font-medium text-gray-900 mb-3">Recent Activity</h4>
               <div className="space-y-2">
                 {transactions.slice(0, 5).map(transaction => (
-                  <div key={transaction.id} className="flex items-center justify-between p-3 bg-secondary-50 rounded-lg">
+                  <div key={transaction.id} className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center space-x-3">
-                      <div className={`p-2 rounded-full ${
-                        transaction.type === 'earned' || transaction.type === 'bonus'
-                          ? 'bg-success-100 text-success-600'
-                          : 'bg-error-100 text-error-600'
-                      }`}>
+                      <div className={`p-1 rounded ${transaction.amount > 0 ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
                         {getTransactionIcon(transaction)}
                       </div>
                       <div>
-                        <div className="font-medium text-secondary-900">{transaction.reason}</div>
-                        <div className="text-sm text-secondary-600">
-                          {transaction.timestamp.toLocaleDateString()} at {transaction.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        <div className="text-sm font-medium text-gray-900">{transaction.reason}</div>
+                        <div className="text-xs text-gray-500">
+                          {transaction.timestamp.toLocaleDateString()}
                         </div>
                       </div>
                     </div>
-                    <div className={`font-bold ${
-                      transaction.type === 'earned' || transaction.type === 'bonus'
-                        ? 'text-success-600'
-                        : 'text-error-600'
+                    <div className={`text-sm font-medium ${
+                      transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
                     }`}>
-                      {transaction.type === 'earned' || transaction.type === 'bonus' ? '+' : ''}{transaction.amount}
+                      {transaction.amount > 0 ? '+' : ''}{transaction.amount}
                     </div>
                   </div>
                 ))}
@@ -623,152 +446,181 @@ export const PointsSystem: React.FC<PointsSystemProps> = ({
             </div>
           </div>
         )}
-        
+
         {activeTab === 'transactions' && (
           <div className="space-y-4">
-            {transactions.map(transaction => (
-              <div key={transaction.id} className="flex items-center justify-between p-4 border border-secondary-200 rounded-lg">
-                <div className="flex items-center space-x-4">
-                  <div className={`p-3 rounded-full ${
-                    transaction.type === 'earned' || transaction.type === 'bonus'
-                      ? 'bg-success-100 text-success-600'
-                      : 'bg-error-100 text-error-600'
-                  }`}>
-                    {getTransactionIcon(transaction)}
-                  </div>
-                  <div>
-                    <div className="font-medium text-secondary-900">{transaction.reason}</div>
-                    <div className="text-sm text-secondary-600 capitalize">{transaction.category} • {transaction.type}</div>
-                    <div className="text-xs text-secondary-500">
-                      {transaction.timestamp.toLocaleDateString()} at {transaction.timestamp.toLocaleTimeString()}
+            <div className="flex items-center justify-between">
+              <h4 className="text-lg font-medium text-gray-900">Transaction History</h4>
+              <div className="text-sm text-gray-500">
+                {transactions.length} transactions
+              </div>
+            </div>
+            <div className="space-y-2">
+              {transactions.map(transaction => (
+                <div key={transaction.id} className="flex items-center justify-between py-3 px-4 border rounded-lg hover:bg-gray-50">
+                  <div className="flex items-center space-x-4">
+                    <div className={`p-2 rounded-lg ${
+                      transaction.amount > 0 ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
+                    }`}>
+                      {getTransactionIcon(transaction)}
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{transaction.reason}</div>
+                      <div className="text-xs text-gray-500 capitalize">
+                        {transaction.category} • {transaction.timestamp.toLocaleString()}
+                      </div>
                     </div>
                   </div>
+                  <div className={`text-lg font-bold ${
+                    transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {transaction.amount > 0 ? '+' : ''}{transaction.amount}
+                  </div>
                 </div>
-                <div className={`text-xl font-bold ${
-                  transaction.type === 'earned' || transaction.type === 'bonus'
-                    ? 'text-success-600'
-                    : 'text-error-600'
-                }`}>
-                  {transaction.type === 'earned' || transaction.type === 'bonus' ? '+' : ''}{transaction.amount}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
-        
+
         {activeTab === 'rewards' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {rewards.map(reward => (
-              <div key={reward.id} className={`p-4 border-2 rounded-lg transition-all hover:shadow-md ${
-                reward.owned ? 'bg-success-50 border-success-200' : getRarityColor(reward.rarity)
-              }`}>
-                <div className="flex items-start justify-between mb-3">
-                  <div className="text-3xl">{reward.icon}</div>
-                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    reward.rarity === 'common' ? 'bg-secondary-100 text-secondary-700' :
-                    reward.rarity === 'rare' ? 'bg-blue-100 text-blue-700' :
-                    reward.rarity === 'epic' ? 'bg-purple-100 text-purple-700' :
-                    'bg-yellow-100 text-yellow-700'
-                  }`}>
-                    {reward.rarity}
-                  </div>
-                </div>
-                
-                <h4 className="font-semibold text-secondary-900 mb-1">{reward.name}</h4>
-                <p className="text-sm text-secondary-600 mb-3">{reward.description}</p>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-1 text-primary-600">
-                    <Coins className="w-4 h-4" />
-                    <span className="font-bold">{reward.cost}</span>
-                  </div>
-                  
-                  {reward.owned ? (
-                    <div className="flex items-center space-x-1 text-success-600">
-                      <CheckCircle className="w-4 h-4" />
-                      <span className="text-sm font-medium">Owned</span>
-                    </div>
-                  ) : reward.available ? (
-                    <button
-                      onClick={() => {
-                        setSelectedReward(reward)
-                        setShowRewardModal(true)
-                      }}
-                      disabled={pointsStats.currentBalance < reward.cost}
-                      className="px-3 py-1 bg-primary-600 hover:bg-primary-700 disabled:bg-secondary-300 text-white text-sm rounded-lg transition-colors"
-                    >
-                      {pointsStats.currentBalance >= reward.cost ? 'Purchase' : 'Not enough'}
-                    </button>
-                  ) : (
-                    <div className="flex items-center space-x-1 text-secondary-500">
-                      <Lock className="w-4 h-4" />
-                      <span className="text-sm">Locked</span>
-                    </div>
-                  )}
-                </div>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="text-lg font-medium text-gray-900">Available Rewards</h4>
+              <div className="text-sm text-gray-500">
+                Balance: {pointsStats.currentBalance} points
               </div>
-            ))}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {rewards.map(reward => (
+                <div key={reward.id} className={`border-2 rounded-lg p-4 transition-all ${
+                  reward.owned ? 'bg-green-50 border-green-200' : 
+                  reward.cost <= pointsStats.currentBalance ? 'hover:shadow-md cursor-pointer' : 'opacity-50'
+                } ${getRarityColor(reward.rarity)}`}
+                onClick={() => {
+                  if (!reward.owned && reward.cost <= pointsStats.currentBalance) {
+                    setSelectedReward(reward)
+                    setShowRewardModal(true)
+                  }
+                }}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="text-2xl">{reward.icon}</div>
+                    <div className="flex items-center space-x-1">
+                      {reward.owned ? (
+                        <CheckCircle className="w-5 h-5 text-green-600" />
+                      ) : reward.cost <= pointsStats.currentBalance ? (
+                        <Unlock className="w-5 h-5 text-gray-400" />
+                      ) : (
+                        <Lock className="w-5 h-5 text-gray-400" />
+                      )}
+                    </div>
+                  </div>
+                  <div className="mb-2">
+                    <h5 className="font-medium text-gray-900">{reward.name}</h5>
+                    <p className="text-xs text-gray-500 capitalize">{reward.category} • {reward.rarity}</p>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-3">{reward.description}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-1 text-yellow-600">
+                      <Coins className="w-4 h-4" />
+                      <span className="font-medium">{reward.cost}</span>
+                    </div>
+                    {reward.owned && (
+                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                        Owned
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
-        
+
         {activeTab === 'levels' && (
           <div className="space-y-4">
-            {levels.map(level => (
-              <div key={level.level} className={`p-4 border-2 rounded-lg ${
-                level.level === pointsStats.level.level
-                  ? 'border-primary-300 bg-primary-50'
-                  : level.level < pointsStats.level.level
-                  ? 'border-success-300 bg-success-50'
-                  : 'border-secondary-200 bg-secondary-50'
-              }`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="text-4xl">{level.badge}</div>
-                    <div>
-                      <h3 className={`text-xl font-bold ${level.color}`}>{level.name}</h3>
-                      <p className="text-secondary-600">Level {level.level}</p>
-                      <p className="text-sm text-secondary-500">
-                        {level.minPoints} - {level.maxPoints === Infinity ? '∞' : level.maxPoints} points
-                      </p>
+            <h4 className="text-lg font-medium text-gray-900">Level System</h4>
+            <div className="space-y-3">
+              {levels.map(level => {
+                const isCurrentLevel = level.level === pointsStats.level.level
+                const isUnlocked = pointsStats.currentBalance >= level.minPoints
+                
+                return (
+                  <div key={level.level} className={`border rounded-lg p-4 ${
+                    isCurrentLevel ? 'border-blue-500 bg-blue-50' : 
+                    isUnlocked ? 'border-green-200 bg-green-50' : 'border-gray-200'
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className={`text-3xl ${level.color}`}>
+                          {level.badge}
+                        </div>
+                        <div>
+                          <h5 className={`font-medium ${
+                            isCurrentLevel ? 'text-blue-900' : isUnlocked ? 'text-green-900' : 'text-gray-900'
+                          }`}>
+                            Level {level.level}: {level.name}
+                          </h5>
+                          <p className="text-sm text-gray-600">
+                            {level.minPoints} - {level.maxPoints === Infinity ? '∞' : level.maxPoints} points
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        {isCurrentLevel && (
+                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                            Current
+                          </span>
+                        )}
+                        {isUnlocked && !isCurrentLevel && level.level < pointsStats.level.level && (
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                        )}
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                      <p className="text-sm text-gray-600 mb-2">Rewards:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {level.rewards.map((reward, index) => (
+                          <span key={index} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                            {reward}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                  
-                  <div className="text-right">
-                    {level.level === pointsStats.level.level && (
-                      <div className="bg-primary-600 text-white px-3 py-1 rounded-full text-sm font-medium mb-2">
-                        Current Level
-                      </div>
-                    )}
-                    {level.level < pointsStats.level.level && (
-                      <div className="bg-success-600 text-white px-3 py-1 rounded-full text-sm font-medium mb-2">
-                        Completed
-                      </div>
-                    )}
-                    <div className="text-sm text-secondary-600">
-                      Rewards: {level.rewards.join(', ')}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+                )
+              })}
+            </div>
           </div>
         )}
       </div>
-      
+
       {/* Reward Purchase Modal */}
       {showRewardModal && selectedReward && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <div className="text-center mb-4">
-              <div className="text-6xl mb-2">{selectedReward.icon}</div>
-              <h3 className="text-xl font-bold text-secondary-900">{selectedReward.name}</h3>
-              <p className="text-secondary-600 mt-2">{selectedReward.description}</p>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Purchase Reward</h3>
+              <button
+                onClick={() => {
+                  setShowRewardModal(false)
+                  setSelectedReward(null)
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ×
+              </button>
             </div>
             
-            <div className="flex items-center justify-center space-x-2 mb-6">
-              <Coins className="w-5 h-5 text-primary-600" />
-              <span className="text-2xl font-bold text-primary-600">{selectedReward.cost}</span>
-              <span className="text-secondary-600">points</span>
+            <div className="text-center mb-6">
+              <div className="text-4xl mb-2">{selectedReward.icon}</div>
+              <h4 className="text-xl font-medium text-gray-900 mb-2">{selectedReward.name}</h4>
+              <p className="text-gray-600 mb-4">{selectedReward.description}</p>
+              
+              <div className="flex items-center justify-center space-x-2 text-yellow-600 text-lg font-bold">
+                <Coins className="w-5 h-5" />
+                <span>{selectedReward.cost} points</span>
+              </div>
             </div>
             
             <div className="flex space-x-3">
@@ -777,14 +629,14 @@ export const PointsSystem: React.FC<PointsSystemProps> = ({
                   setShowRewardModal(false)
                   setSelectedReward(null)
                 }}
-                className="flex-1 px-4 py-2 border border-secondary-300 text-secondary-700 rounded-lg hover:bg-secondary-50 transition-colors"
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button
-                onClick={() => purchaseReward(selectedReward)}
-                disabled={pointsStats.currentBalance < selectedReward.cost}
-                className="flex-1 px-4 py-2 bg-primary-600 hover:bg-primary-700 disabled:bg-secondary-300 text-white rounded-lg transition-colors"
+                onClick={() => purchaseReward(selectedReward.id)}
+                disabled={selectedReward.cost > pointsStats.currentBalance}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Purchase
               </button>
